@@ -3,9 +3,12 @@ package com.hmdp.controller;
 
 import com.hmdp.dto.LoginFormDTO;
 import com.hmdp.dto.Result;
+import com.hmdp.dto.UserDTO;
+import com.hmdp.entity.User;
 import com.hmdp.entity.UserInfo;
 import com.hmdp.service.IUserInfoService;
 import com.hmdp.service.IUserService;
+import com.hmdp.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,11 +62,11 @@ public class UserController {
         // TODO 实现登出功能
         return Result.fail("功能未完成");
     }
-
     @GetMapping("/me")
     public Result me(){
-        // TODO 获取当前登录的用户并返回
-        return Result.fail("功能未完成");
+        // 获取当前登录的用户并返回
+        UserDTO userDTO = UserHolder.getUser();
+        return Result.ok(userDTO);
     }
 
     @GetMapping("/info/{id}")
