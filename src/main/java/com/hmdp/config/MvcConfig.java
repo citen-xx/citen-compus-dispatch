@@ -25,9 +25,15 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/user/login",
                         "/shop/**",
                         "/voucher/**",
-                        "/shop-type/**",
-                        "/upload/**"
+                        // ↓↓↓ 增加放行静态资源 ↓↓↓
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js",
+                        "/favicon.ico"
                 ).order(1);
-        registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).addPathPatterns("/**").order(0);
-    }
-}
+
+        // 2. Token刷新拦截器
+        registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate))
+                .addPathPatterns("/**")
+                .order(0);
+    }}
