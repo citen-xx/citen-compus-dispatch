@@ -46,6 +46,8 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
    private StringRedisTemplate stringRedisTemplate;
 
 
+
+
     @Override
     public Result seckillVoucher(Long voucherId) {
         SeckillVoucher voucher = seckillVoucherService.getById(voucherId);
@@ -73,9 +75,10 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 //            return Result.fail("不允许重复下单");
 //        }
         //创建锁对象
-        SimpleRedisLock redislock = new SimpleRedisLock("order" + userId, stringRedisTemplate);
+      //  SimpleRedisLock redislock = new SimpleRedisLock("order" + userId, stringRedisTemplate);
+        RLock redislock = redissonClient.getLock("locak:order" + userId);
         //获取锁
-        boolean isLock= redislock.tryLock(1200);
+        boolean isLock= redislock.tryLock();
 
         if(!isLock){
             return Result.fail("不允许重复下单");
