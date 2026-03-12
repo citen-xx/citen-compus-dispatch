@@ -17,4 +17,11 @@ public interface IShopService extends IService<Shop> {
     Result queryById(Long id) throws InterruptedException;
 
     Result update(Shop shop);
+
+    Result queryShopByType(Integer typeId, Integer current, Double x, Double y);
+
+    /**
+     * 加载所有店铺数据到Redis
+     */
+    void loadShopData();
 }
