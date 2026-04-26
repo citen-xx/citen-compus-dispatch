@@ -1,6 +1,7 @@
 package com.hmdp.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -77,5 +78,9 @@ public class VoucherOrder implements Serializable {
      */
     private LocalDateTime updateTime;
 
-
+    /**
+     * 运行期计算出的最终实付金额，单位：分，不落库。
+     */
+    @TableField(exist = false)
+    private Long finalPayAmount;
 }
