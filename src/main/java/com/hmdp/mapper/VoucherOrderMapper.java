@@ -2,6 +2,9 @@ package com.hmdp.mapper;
 
 import com.hmdp.entity.VoucherOrder;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface VoucherOrderMapper extends BaseMapper<VoucherOrder> {
 
+    List<VoucherOrder> selectAdminPageByDeferredJoin(@Param("offset") Long offset, @Param("pageSize") Long pageSize);
 }
