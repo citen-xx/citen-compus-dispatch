@@ -1,6 +1,7 @@
 package com.hmdp.service;
 
 import com.hmdp.entity.Shop;
+import com.hmdp.mapper.ShopMapper;
 import com.hmdp.utils.RedisConstants;
 import com.hmdp.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResult;
 import org.springframework.data.geo.GeoResults;
 import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.domain.geo.GeoReference;
@@ -26,7 +28,7 @@ public class DispatchService {
     private StringRedisTemplate stringRedisTemplate;
 
     @Resource
-    private IShopService shopService;
+    private ShopMapper shopMapper;
 
     @PostConstruct
     public void initRiderGeoData() {
@@ -36,14 +38,10 @@ public class DispatchService {
         }
 
         List<RedisGeoCommands.GeoLocation<String>> riders = new ArrayList<>(4);
-        riders.add(new RedisGeoCommands.GeoLocation<>("骑手张三",
-                new org.springframework.data.geo.Point(120.149500, 30.315900)));
-        riders.add(new RedisGeoCommands.GeoLocation<>("骑手李四",
-                new org.springframework.data.geo.Point(120.151200, 30.318100)));
-        riders.add(new RedisGeoCommands.GeoLocation<>("骑手王五",
-                new org.springframework.data.geo.Point(120.146800, 30.314500)));
-        riders.add(new RedisGeoCommands.GeoLocation<>("骑手赵六",
-                new org.springframework.data.geo.Point(120.154000, 30.320200)));
+        riders.add(new RedisGeoCommands.GeoLocation<>("骑手张三", new Point(120.149500, 30.315900)));
+        riders.add(new RedisGeoCommands.GeoLocation<>("骑手李四", new Point(120.151200, 30.318100)));
+        riders.add(new RedisGeoCommands.GeoLocation<>("骑手王五", new Point(120.146800, 30.314500)));
+        riders.add(new RedisGeoCommands.GeoLocation<>("骑手赵六", new Point(120.154000, 30.320200)));
         stringRedisTemplate.opsForGeo().add(RedisConstants.DELIVERY_RIDER_GEO_KEY, riders);
     }
 
@@ -53,7 +51,7 @@ public class DispatchService {
             return;
         }
 
-        Shop shop = shopService.getById(shopId);
+        Shop shop = shopMapper.selectById(shopId);
         if (shop == null || shop.getX() == null || shop.getY() == null) {
             log.warn("dispatch skipped, shop location missing, orderId={}, shopId={}", orderId, shopId);
             return;
@@ -73,7 +71,6 @@ public class DispatchService {
 
         GeoResult<RedisGeoCommands.GeoLocation<String>> riderResult = results.getContent().get(0);
         String riderName = riderResult.getContent().getName();
-        System.out.println("已派单给" + riderName);
         log.info("dispatch success, orderId={}, shopId={}, rider={}, distance={}km",
                 orderId, shopId, riderName, riderResult.getDistance() == null ? null : riderResult.getDistance().getValue());
 
