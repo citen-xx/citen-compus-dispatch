@@ -1,8 +1,14 @@
 server:
-  port: 8081
+  port: 8082
+
 spring:
   application:
-    name: citen-dp
+    name: order-service
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      discovery:
+        server-addr: 127.0.0.1:8848
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/citen_dp?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&characterEncoding=utf8
@@ -26,8 +32,11 @@ spring:
     virtual-host: /
   jackson:
     default-property-inclusion: non_null
+
 mybatis-plus:
   type-aliases-package: com.citen.entity
+  mapper-locations: classpath*:mapper/**/*.xml
+
 logging:
   level:
     com.citen: debug

@@ -11,19 +11,19 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.hmdp</groupId>
-    <artifactId>hm-dianping</artifactId>
+    <groupId>com.citen</groupId>
+    <artifactId>citen-dp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>hm-dianping</name>
-    <description>hm-dianping parent project</description>
+    <name>citen-dp</name>
+    <description>citen-dp parent project</description>
 
     <modules>
-        <module>hm-common</module>
-        <module>hm-gateway</module>
-        <module>hm-user-api</module>
-        <module>hm-user-service</module>
-        <module>hm-order-service</module>
+        <module>citen-common</module>
+        <module>citen-gateway</module>
+        <module>citen-user-api</module>
+        <module>citen-user-service</module>
+        <module>citen-order-service</module>
     </modules>
 
     <properties>

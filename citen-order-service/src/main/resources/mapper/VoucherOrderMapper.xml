@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.citen.mapper.VoucherOrderMapper">
+
+    <select id="selectAdminPageByDeferredJoin" resultType="com.citen.entity.VoucherOrder">
+        <!--
+            深分页不要直接写成：
+            SELECT * FROM tb_voucher_order ORDER BY id DESC LIMIT 1000000, 10;
+
+            原因：
+            1. 普通 LIMIT 深翻页会让 MySQL 先扫描并丢弃前 1000000 行，再取最后 10 行。
+            2. 如果直接 SELECT *，扫描阶段会把整行数据都带出来，代价更高。
+
+            这里采用“子查询 + 主键 JOIN 延迟关联”：
+            1. 内层子查询只查询 id，并按主键 id 排序分页。
+               由于只访问主键列，能够直接在主键索引上完成扫描，形成覆盖索引访问。
+            2. 内层先把真正需要的 10 个 id 取出来，外层再按主键回表拿完整行数据。
+               这样只会对最终命中的 10 行做回表，而不是对前面的大量跳过行都回表。
+            3. 本质上就是把“大量无意义的回表”推迟到最后，降低深分页成本。
+
+            如果使用 EXPLAIN 观察：
+            1. 内层子查询通常会走 PRIMARY，Extra 常见为 Using index，
+               表示只靠索引列就完成了读取，符合覆盖索引特征。
+            2. 外层按主键 JOIN 时，type 通常是 eq_ref 或 const 级别，Extra 可能为 NULL。
+            3. 如果保留最终 ORDER BY，外层可能出现 Using filesort，
+               但这里排序的数据量已经缩小到 pageSize 条，不再是对百万级偏移结果做排序。
+        -->
+        SELECT
+            o.id,
+            o.user_id,
+            o.voucher_id,
+            o.pay_type,
+            o.status,
+            o.create_time,
+            o.pay_time,
+            o.use_time,
+            o.refund_time,
+            o.update_time
+        FROM tb_voucher_order o
+        INNER JOIN (
+            SELECT id
+            FROM tb_voucher_order
+            FORCE INDEX (PRIMARY)
+            ORDER BY id DESC
+            LIMIT #{offset}, #{pageSize}
+        ) page_ids ON o.id = page_ids.id
+        ORDER BY page_ids.id DESC
+    </select>
+
+</mapper>

@@ -1,8 +1,14 @@
 server:
   port: 8081
+
 spring:
   application:
-    name: citen-dp
+    name: user-service
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      discovery:
+        server-addr: 127.0.0.1:8848
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/citen_dp?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&characterEncoding=utf8
@@ -18,16 +24,13 @@ spring:
         max-idle: 10
         min-idle: 1
         time-between-eviction-runs: 10s
-  rabbitmq:
-    host: 127.0.0.1
-    port: 5672
-    username: guest
-    password: guest
-    virtual-host: /
   jackson:
     default-property-inclusion: non_null
+
 mybatis-plus:
   type-aliases-package: com.citen.entity
+  mapper-locations: classpath*:mapper/**/*.xml
+
 logging:
   level:
     com.citen: debug
