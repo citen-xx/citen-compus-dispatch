@@ -48,13 +48,17 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * 高并发资源抢占核心实现类。
+ * 原“抢购秒杀券”逻辑重构为“抢占实训室/智算中心资源名额”。
+ */
 @Service
-public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Reservation> implements IVoucherOrderService {
+public class ReservationServiceImpl extends ServiceImpl<VoucherOrderMapper, Reservation> implements IVoucherOrderService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(VoucherOrderServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ReservationServiceImpl.class);
 
-    private static final int ORDER_STATUS_UNPAID = 1;
-    private static final int ORDER_STATUS_CANCELED = 4;
+    private static final int RESERVATION_STATUS_PENDING_CONFIRM = 1;
+    private static final int RESERVATION_STATUS_CANCELED = 4;
 
     private static final DefaultRedisScript<Long> SECKILL_SCRIPT;
 
@@ -88,19 +92,19 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
     @javax.annotation.Resource
     private DispatchService dispatchService;
 
-    private final BlockingQueue<Reservation> orderTasks = new ArrayBlockingQueue<>(1024 * 1024);
-    private static final ExecutorService SECKILL_ORDER_EXECUTOR = Executors.newSingleThreadExecutor();
-    private final String queueName = "stream.orders";
+    private final BlockingQueue<Reservation> reservationTasks = new ArrayBlockingQueue<>(1024 * 1024);
+    private static final ExecutorService RESERVATION_EXECUTOR = Executors.newSingleThreadExecutor();
+    private final String streamQueueName = "stream.orders";
 
     private IVoucherOrderService proxy;
 
     @PostConstruct
     private void init() {
-        SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandle());
-        initStockToRedis();
+        RESERVATION_EXECUTOR.submit(new ReservationHandle());
+        initQuotaToRedis();
     }
 
-    private void initStockToRedis() {
+    private void initQuotaToRedis() {
         try {
             List<ResourceQuota> quotas = seckillVoucherService.list();
             for (ResourceQuota quota : quotas) {
@@ -115,7 +119,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
         }
     }
 
-    private class VoucherOrderHandle implements Runnable {
+    private class ReservationHandle implements Runnable {
         @Override
         public void run() {
             while (true) {
@@ -123,7 +127,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
                     List<MapRecord<String, Object, Object>> list = stringRedisTemplate.opsForStream().read(
                             Consumer.from("g1", "c1"),
                             StreamReadOptions.empty().count(1).block(Duration.ofSeconds(2)),
-                            StreamOffset.create(queueName, ReadOffset.lastConsumed())
+                            StreamOffset.create(streamQueueName, ReadOffset.lastConsumed())
                     );
                     if (list == null || list.isEmpty()) {
                         continue;
@@ -133,10 +137,10 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
                     Map<Object, Object> valueMap = values.getValue();
                     Reservation reservation = BeanUtil.fillBeanWithMap(valueMap, new Reservation(), true);
 
-                    handleVoucherOrder(reservation);
-                    stringRedisTemplate.opsForStream().acknowledge(queueName, "g1", values.getId());
+                    handleReservation(reservation);
+                    stringRedisTemplate.opsForStream().acknowledge(streamQueueName, "g1", values.getId());
                 } catch (Exception e) {
-                    LOG.error("handle stream order failed", e);
+                    LOG.error("handle reservation stream failed", e);
                     handlePendingList();
                 }
             }
@@ -149,7 +153,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
                 List<MapRecord<String, Object, Object>> list = stringRedisTemplate.opsForStream().read(
                         Consumer.from("g1", "c1"),
                         StreamReadOptions.empty().count(1).block(Duration.ofSeconds(2)),
-                        StreamOffset.create(queueName, ReadOffset.from("0"))
+                        StreamOffset.create(streamQueueName, ReadOffset.from("0"))
                 );
                 if (list == null || list.isEmpty()) {
                     break;
@@ -159,20 +163,20 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
                 Map<Object, Object> valueMap = values.getValue();
                 Reservation reservation = BeanUtil.fillBeanWithMap(valueMap, new Reservation(), true);
 
-                handleVoucherOrder(reservation);
-                stringRedisTemplate.opsForStream().acknowledge(queueName, "g1", values.getId());
+                handleReservation(reservation);
+                stringRedisTemplate.opsForStream().acknowledge(streamQueueName, "g1", values.getId());
             } catch (Exception e) {
-                LOG.error("handle pending-list order failed", e);
+                LOG.error("handle reservation pending-list failed", e);
             }
         }
     }
 
-    private void handleVoucherOrder(Reservation reservation) {
+    private void handleReservation(Reservation reservation) {
         Long userId = reservation.getUserId();
-        RLock redisLock = redissonClient.getLock("lock:order:" + userId);
-        boolean isLock = redisLock.tryLock();
-        if (!isLock) {
-            LOG.error("duplicate reservation rejected, userId={}", userId);
+        RLock redisLock = redissonClient.getLock("lock:reservation:" + userId);
+        boolean locked = redisLock.tryLock();
+        if (!locked) {
+            LOG.error("same user concurrent reservation rejected, userId={}", userId);
             return;
         }
 
@@ -186,29 +190,35 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
     @Override
     public Result seckillVoucher(Long resourceId) {
         Long userId = UserHolder.getUser().getId();
-        long orderId = redisIdWorker.nextId("reservation");
+        long reservationId = redisIdWorker.nextId("reservation");
 
         Long result = stringRedisTemplate.execute(
                 SECKILL_SCRIPT,
                 Collections.emptyList(),
                 resourceId.toString(),
                 userId.toString(),
-                String.valueOf(orderId)
+                String.valueOf(reservationId)
         );
 
         int r = result == null ? -1 : result.intValue();
+        if (r == 1) {
+            return Result.fail("当前时段算力额度已被抢空");
+        }
+        if (r == 2) {
+            return Result.fail("同一用户在同时段内不允许重复预约");
+        }
         if (r != 0) {
-            return Result.fail(r == 1 ? "资源额度已满" : "资源超额分配");
+            return Result.fail("资源抢占失败，请稍后重试");
         }
 
         Reservation reservation = new Reservation();
-        reservation.setId(orderId);
+        reservation.setId(reservationId);
         reservation.setUserId(userId);
         reservation.setResourceId(resourceId);
-        orderTasks.add(reservation);
+        reservationTasks.add(reservation);
 
         proxy = (IVoucherOrderService) AopContext.currentProxy();
-        return Result.ok(orderId);
+        return Result.ok(reservationId);
     }
 
     @Override
@@ -238,7 +248,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
                 .eq("resource_id", reservation.getResourceId())
                 .count();
         if (count > 0) {
-            LOG.error("user already reserved, userId={}, resourceId={}", userId, reservation.getResourceId());
+            LOG.warn("same user duplicate reservation blocked, userId={}, resourceId={}", userId, reservation.getResourceId());
             return;
         }
 
@@ -250,7 +260,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
 
         Long allocatedQuota = calculateAllocatedQuota(resource);
         reservation.setAllocatedQuota(allocatedQuota);
-        reservation.setStatus(ORDER_STATUS_UNPAID);
+        reservation.setStatus(RESERVATION_STATUS_PENDING_CONFIRM);
 
         boolean success = seckillVoucherService.update()
                 .setSql("quota=quota-1")
@@ -258,12 +268,12 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
                 .gt("quota", 0)
                 .update();
         if (!success) {
-            LOG.error("resource quota exhausted, resourceId={}", reservation.getResourceId());
+            LOG.error("当前时段算力额度已被抢空, resourceId={}", reservation.getResourceId());
             return;
         }
 
         save(reservation);
-        registerAfterCommitActions(reservation.getId(), resource.getLabId());
+        registerAfterCommitActions(reservation, resource.getLabId());
     }
 
     @Override
@@ -271,21 +281,21 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
     public void cancelTimeoutOrder(Long orderId) {
         Reservation reservation = getById(orderId);
         if (reservation == null) {
-            LOG.warn("timeout reservation not found, orderId={}", orderId);
+            LOG.warn("timeout reservation not found, reservationId={}", orderId);
             return;
         }
-        if (!Integer.valueOf(ORDER_STATUS_UNPAID).equals(reservation.getStatus())) {
-            LOG.info("timeout reservation ignored, orderId={}, status={}", orderId, reservation.getStatus());
+        if (!Integer.valueOf(RESERVATION_STATUS_PENDING_CONFIRM).equals(reservation.getStatus())) {
+            LOG.info("timeout reservation ignored, reservationId={}, status={}", orderId, reservation.getStatus());
             return;
         }
 
         boolean canceled = update()
-                .set("status", ORDER_STATUS_CANCELED)
+                .set("status", RESERVATION_STATUS_CANCELED)
                 .eq("id", orderId)
-                .eq("status", ORDER_STATUS_UNPAID)
+                .eq("status", RESERVATION_STATUS_PENDING_CONFIRM)
                 .update();
         if (!canceled) {
-            LOG.info("timeout reservation cancel skipped by concurrent update, orderId={}", orderId);
+            LOG.info("timeout reservation cancel skipped by concurrent update, reservationId={}", orderId);
             return;
         }
 
@@ -294,7 +304,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
                 .eq("resource_id", reservation.getResourceId())
                 .update();
         if (!restored) {
-            LOG.warn("db quota restore failed, orderId={}, resourceId={}", orderId, reservation.getResourceId());
+            LOG.warn("db quota restore failed, reservationId={}, resourceId={}", orderId, reservation.getResourceId());
         }
 
         stringRedisTemplate.opsForValue().increment(RedisConstants.SECKILL_STOCK_KEY + reservation.getResourceId());
@@ -309,23 +319,23 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Res
         return priceStrategyFactory.getStrategy(strategyType).calculatePrice(resource);
     }
 
-    private void registerAfterCommitActions(final Long orderId, final Long labId) {
+    private void registerAfterCommitActions(final Reservation reservation, final Long labId) {
         registerAfterCommit(() -> {
             rabbitTemplate.convertAndSend(
-                    RabbitMQConfig.ORDER_EVENT_EXCHANGE,
-                    RabbitMQConfig.ORDER_DELAY_ROUTING_KEY,
-                    String.valueOf(orderId)
+                    RabbitMQConfig.RESERVATION_EVENT_EXCHANGE,
+                    RabbitMQConfig.RESERVATION_DELAY_ROUTING_KEY,
+                    reservation
             );
-            pushReservationStatusChange(labId, orderId, "待确认");
-            dispatchService.dispatchOrder(orderId, labId);
+            pushReservationStatusChange(labId, reservation.getId(), "待确认");
+            dispatchService.dispatchOrder(reservation.getId(), labId);
         });
     }
 
-    private void pushReservationStatusChange(Long labId, Long orderId, String statusText) {
+    private void pushReservationStatusChange(Long labId, Long reservationId, String statusText) {
         if (labId == null) {
             return;
         }
-        WebSocketServer.sendToShop(labId, "预约状态已变更：" + statusText + "，预约ID=" + orderId);
+        WebSocketServer.sendToShop(labId, "预约状态已变更：" + statusText + "，预约ID=" + reservationId);
     }
 
     private void registerAfterCommit(final Runnable action) {

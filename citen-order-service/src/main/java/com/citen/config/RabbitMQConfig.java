@@ -11,52 +11,51 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String ORDER_EVENT_EXCHANGE = "order.event.exchange";
-    public static final String ORDER_DELAY_QUEUE = "order.delay.queue";
-    public static final String ORDER_DELAY_ROUTING_KEY = "order.delay";
+    public static final String RESERVATION_EVENT_EXCHANGE = "reservation.event.exchange";
+    public static final String RESERVATION_DELAY_QUEUE = "reservation.queue";
+    public static final String RESERVATION_DELAY_ROUTING_KEY = "reservation.delay";
 
-    public static final String ORDER_DLX_EXCHANGE = "order.dlx.exchange";
-    public static final String ORDER_TIMEOUT_QUEUE = "order.timeout.queue";
-    public static final String ORDER_TIMEOUT_ROUTING_KEY = "order.timeout";
+    public static final String RESERVATION_DLX_EXCHANGE = "reservation.dlx.exchange";
+    public static final String RESERVATION_TIMEOUT_QUEUE = "reservation.timeout.queue";
+    public static final String RESERVATION_TIMEOUT_ROUTING_KEY = "reservation.timeout";
 
-    // 测试环境先用 10 秒；正式环境改成 15 * 60 * 1000 即可。
-    public static final int ORDER_CANCEL_TTL = 10 * 1000;
+    public static final int RESERVATION_CANCEL_TTL = 10 * 1000;
 
     @Bean
-    public DirectExchange orderEventExchange() {
-        return new DirectExchange(ORDER_EVENT_EXCHANGE, true, false);
+    public DirectExchange reservationEventExchange() {
+        return new DirectExchange(RESERVATION_EVENT_EXCHANGE, true, false);
     }
 
     @Bean
-    public DirectExchange orderDlxExchange() {
-        return new DirectExchange(ORDER_DLX_EXCHANGE, true, false);
+    public DirectExchange reservationDlxExchange() {
+        return new DirectExchange(RESERVATION_DLX_EXCHANGE, true, false);
     }
 
     @Bean
-    public Queue orderDelayQueue() {
-        return QueueBuilder.durable(ORDER_DELAY_QUEUE)
-                .ttl(ORDER_CANCEL_TTL)
-                .deadLetterExchange(ORDER_DLX_EXCHANGE)
-                .deadLetterRoutingKey(ORDER_TIMEOUT_ROUTING_KEY)
+    public Queue reservationDelayQueue() {
+        return QueueBuilder.durable(RESERVATION_DELAY_QUEUE)
+                .ttl(RESERVATION_CANCEL_TTL)
+                .deadLetterExchange(RESERVATION_DLX_EXCHANGE)
+                .deadLetterRoutingKey(RESERVATION_TIMEOUT_ROUTING_KEY)
                 .build();
     }
 
     @Bean
-    public Queue orderTimeoutQueue() {
-        return QueueBuilder.durable(ORDER_TIMEOUT_QUEUE).build();
+    public Queue reservationTimeoutQueue() {
+        return QueueBuilder.durable(RESERVATION_TIMEOUT_QUEUE).build();
     }
 
     @Bean
-    public Binding orderDelayBinding() {
-        return BindingBuilder.bind(orderDelayQueue())
-                .to(orderEventExchange())
-                .with(ORDER_DELAY_ROUTING_KEY);
+    public Binding reservationDelayBinding() {
+        return BindingBuilder.bind(reservationDelayQueue())
+                .to(reservationEventExchange())
+                .with(RESERVATION_DELAY_ROUTING_KEY);
     }
 
     @Bean
-    public Binding orderTimeoutBinding() {
-        return BindingBuilder.bind(orderTimeoutQueue())
-                .to(orderDlxExchange())
-                .with(ORDER_TIMEOUT_ROUTING_KEY);
+    public Binding reservationTimeoutBinding() {
+        return BindingBuilder.bind(reservationTimeoutQueue())
+                .to(reservationDlxExchange())
+                .with(RESERVATION_TIMEOUT_ROUTING_KEY);
     }
 }
