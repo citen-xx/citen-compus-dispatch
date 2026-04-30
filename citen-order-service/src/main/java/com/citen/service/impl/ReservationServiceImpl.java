@@ -7,11 +7,11 @@ import com.citen.dto.Result;
 import com.citen.entity.Reservation;
 import com.citen.entity.Resource;
 import com.citen.entity.ResourceQuota;
-import com.citen.mapper.VoucherOrderMapper;
+import com.citen.mapper.ReservationMapper;
 import com.citen.service.DispatchService;
-import com.citen.service.ISeckillVoucherService;
-import com.citen.service.IVoucherOrderService;
-import com.citen.service.IVoucherService;
+import com.citen.service.IReservationService;
+import com.citen.service.IResourceQuotaService;
+import com.citen.service.IResourceService;
 import com.citen.strategy.PriceStrategyFactory;
 import com.citen.strategy.PriceStrategyType;
 import com.citen.utils.RedisConstants;
@@ -48,31 +48,27 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * 高并发资源抢占核心实现类。
- * 原“抢购秒杀券”逻辑重构为“抢占实训室/智算中心资源名额”。
- */
 @Service
-public class ReservationServiceImpl extends ServiceImpl<VoucherOrderMapper, Reservation> implements IVoucherOrderService {
+public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reservation> implements IReservationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReservationServiceImpl.class);
 
     private static final int RESERVATION_STATUS_PENDING_CONFIRM = 1;
     private static final int RESERVATION_STATUS_CANCELED = 4;
 
-    private static final DefaultRedisScript<Long> SECKILL_SCRIPT;
+    private static final DefaultRedisScript<Long> RESERVATION_SCRIPT;
 
     static {
-        SECKILL_SCRIPT = new DefaultRedisScript<>();
-        SECKILL_SCRIPT.setLocation(new ClassPathResource("seckill.lua"));
-        SECKILL_SCRIPT.setResultType(Long.class);
+        RESERVATION_SCRIPT = new DefaultRedisScript<>();
+        RESERVATION_SCRIPT.setLocation(new ClassPathResource("seckill.lua"));
+        RESERVATION_SCRIPT.setResultType(Long.class);
     }
 
     @javax.annotation.Resource
-    private ISeckillVoucherService seckillVoucherService;
+    private IResourceQuotaService resourceQuotaService;
 
     @javax.annotation.Resource
-    private IVoucherService voucherService;
+    private IResourceService resourceService;
 
     @javax.annotation.Resource
     private RedisIdWorker redisIdWorker;
@@ -94,21 +90,21 @@ public class ReservationServiceImpl extends ServiceImpl<VoucherOrderMapper, Rese
 
     private final BlockingQueue<Reservation> reservationTasks = new ArrayBlockingQueue<>(1024 * 1024);
     private static final ExecutorService RESERVATION_EXECUTOR = Executors.newSingleThreadExecutor();
-    private final String streamQueueName = "stream.orders";
+    private final String streamQueueName = "stream.reservations";
 
-    private IVoucherOrderService proxy;
+    private IReservationService proxy;
 
     @PostConstruct
     private void init() {
-        RESERVATION_EXECUTOR.submit(new ReservationHandle());
+        RESERVATION_EXECUTOR.submit(new ReservationTaskHandler());
         initQuotaToRedis();
     }
 
     private void initQuotaToRedis() {
         try {
-            List<ResourceQuota> quotas = seckillVoucherService.list();
+            List<ResourceQuota> quotas = resourceQuotaService.list();
             for (ResourceQuota quota : quotas) {
-                String quotaKey = RedisConstants.SECKILL_STOCK_KEY + quota.getResourceId();
+                String quotaKey = RedisConstants.RESOURCE_QUOTA_KEY + quota.getResourceId();
                 if (stringRedisTemplate.opsForValue().get(quotaKey) == null) {
                     stringRedisTemplate.opsForValue().set(quotaKey, quota.getQuota().toString());
                     LOG.info("init quota to redis, resourceId={}, quota={}", quota.getResourceId(), quota.getQuota());
@@ -119,7 +115,7 @@ public class ReservationServiceImpl extends ServiceImpl<VoucherOrderMapper, Rese
         }
     }
 
-    private class ReservationHandle implements Runnable {
+    private class ReservationTaskHandler implements Runnable {
         @Override
         public void run() {
             while (true) {
@@ -181,19 +177,19 @@ public class ReservationServiceImpl extends ServiceImpl<VoucherOrderMapper, Rese
         }
 
         try {
-            proxy.createVoucherOrder(reservation);
+            proxy.createReservation(reservation);
         } finally {
             redisLock.unlock();
         }
     }
 
     @Override
-    public Result seckillVoucher(Long resourceId) {
+    public Result reserveResource(Long resourceId) {
         Long userId = UserHolder.getUser().getId();
         long reservationId = redisIdWorker.nextId("reservation");
 
         Long result = stringRedisTemplate.execute(
-                SECKILL_SCRIPT,
+                RESERVATION_SCRIPT,
                 Collections.emptyList(),
                 resourceId.toString(),
                 userId.toString(),
@@ -217,17 +213,17 @@ public class ReservationServiceImpl extends ServiceImpl<VoucherOrderMapper, Rese
         reservation.setResourceId(resourceId);
         reservationTasks.add(reservation);
 
-        proxy = (IVoucherOrderService) AopContext.currentProxy();
+        proxy = (IReservationService) AopContext.currentProxy();
         return Result.ok(reservationId);
     }
 
     @Override
-    public Result queryAdminOrderPage(Long current, Long size) {
+    public Result queryAdminReservationPage(Long current, Long size) {
         long validCurrent = current == null || current < 1 ? 1L : current;
         long validSize = size == null || size < 1 ? 10L : size;
         long offset = (validCurrent - 1) * validSize;
 
-        List<Reservation> records = baseMapper.selectAdminPageByDeferredJoin(offset, validSize);
+        List<Reservation> records = baseMapper.selectAdminReservationPage(offset, validSize);
         long total = count();
 
         Map<String, Object> pageResult = new HashMap<>(4);
@@ -240,7 +236,7 @@ public class ReservationServiceImpl extends ServiceImpl<VoucherOrderMapper, Rese
 
     @Override
     @Transactional
-    public void createVoucherOrder(Reservation reservation) {
+    public void createReservation(Reservation reservation) {
         Long userId = reservation.getUserId();
 
         int count = query()
@@ -252,7 +248,7 @@ public class ReservationServiceImpl extends ServiceImpl<VoucherOrderMapper, Rese
             return;
         }
 
-        Resource resource = voucherService.getById(reservation.getResourceId());
+        Resource resource = resourceService.getById(reservation.getResourceId());
         if (resource == null) {
             LOG.error("resource not found, resourceId={}", reservation.getResourceId());
             return;
@@ -262,7 +258,7 @@ public class ReservationServiceImpl extends ServiceImpl<VoucherOrderMapper, Rese
         reservation.setAllocatedQuota(allocatedQuota);
         reservation.setStatus(RESERVATION_STATUS_PENDING_CONFIRM);
 
-        boolean success = seckillVoucherService.update()
+        boolean success = resourceQuotaService.update()
                 .setSql("quota=quota-1")
                 .eq("resource_id", reservation.getResourceId())
                 .gt("quota", 0)
@@ -278,40 +274,40 @@ public class ReservationServiceImpl extends ServiceImpl<VoucherOrderMapper, Rese
 
     @Override
     @Transactional
-    public void cancelTimeoutOrder(Long orderId) {
-        Reservation reservation = getById(orderId);
+    public void markTimeoutBreach(Long reservationId) {
+        Reservation reservation = getById(reservationId);
         if (reservation == null) {
-            LOG.warn("timeout reservation not found, reservationId={}", orderId);
+            LOG.warn("timeout reservation not found, reservationId={}", reservationId);
             return;
         }
         if (!Integer.valueOf(RESERVATION_STATUS_PENDING_CONFIRM).equals(reservation.getStatus())) {
-            LOG.info("timeout reservation ignored, reservationId={}, status={}", orderId, reservation.getStatus());
+            LOG.info("timeout reservation ignored, reservationId={}, status={}", reservationId, reservation.getStatus());
             return;
         }
 
         boolean canceled = update()
                 .set("status", RESERVATION_STATUS_CANCELED)
-                .eq("id", orderId)
+                .eq("id", reservationId)
                 .eq("status", RESERVATION_STATUS_PENDING_CONFIRM)
                 .update();
         if (!canceled) {
-            LOG.info("timeout reservation cancel skipped by concurrent update, reservationId={}", orderId);
+            LOG.info("timeout reservation cancel skipped by concurrent update, reservationId={}", reservationId);
             return;
         }
 
-        boolean restored = seckillVoucherService.update()
+        boolean restored = resourceQuotaService.update()
                 .setSql("quota=quota+1")
                 .eq("resource_id", reservation.getResourceId())
                 .update();
         if (!restored) {
-            LOG.warn("db quota restore failed, reservationId={}, resourceId={}", orderId, reservation.getResourceId());
+            LOG.warn("db quota restore failed, reservationId={}, resourceId={}", reservationId, reservation.getResourceId());
         }
 
-        stringRedisTemplate.opsForValue().increment(RedisConstants.SECKILL_STOCK_KEY + reservation.getResourceId());
+        stringRedisTemplate.opsForValue().increment(RedisConstants.RESOURCE_QUOTA_KEY + reservation.getResourceId());
 
-        Resource resource = voucherService.getById(reservation.getResourceId());
+        Resource resource = resourceService.getById(reservation.getResourceId());
         Long labId = resource == null ? null : resource.getLabId();
-        registerAfterCommit(() -> pushReservationStatusChange(labId, orderId, "已取消"));
+        registerAfterCommit(() -> pushReservationStatusChange(labId, reservationId, "已取消"));
     }
 
     private Long calculateAllocatedQuota(Resource resource) {
@@ -352,7 +348,6 @@ public class ReservationServiceImpl extends ServiceImpl<VoucherOrderMapper, Rese
             });
             return;
         }
-
         action.run();
     }
 

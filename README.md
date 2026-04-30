@@ -1,358 +1,260 @@
-# citen-dp
+# 项目二：校园稀缺资源（智算中心 / 实训室）高可用调度中台
 
-`citen-dp` 是一个基于 Spring Cloud Alibaba 的本地生活交易系统示例项目，核心覆盖用户登录、网关鉴权、优惠券秒杀下单、异步订单处理、订单超时取消、骑手派单和商家实时通知等典型业务链路。
+## 项目简介
 
-这个项目最初是单体 Spring Boot 结构，当前已经重构为 Maven 多模块微服务架构，适合用来展示下面这些能力：
+这是一个基于 **Spring Cloud Alibaba** 重构的校园稀缺资源调度中台，面向高校场景中的：
 
-- 单体到微服务的拆分与模块边界设计
-- Gateway 统一入口和无状态鉴权
-- Redis 在登录态、Bitmap、Lua、Stream、GEO 等多场景中的使用
-- RabbitMQ 延迟消息 + 死信队列处理订单超时取消
-- Redisson 分布式锁控制并发重复下单
-- OpenFeign 跨服务调用
-- WebSocket 实时通知
+- 智算中心 GPU 算力节点
+- 实训室座位 / 机器工位
+- 深度学习工作站
+- 高价值实验资源时段名额
+
+项目核心职责不是做问答，而是作为上层“校园智能问答助手”的**底层业务执行引擎**，无缝承接大模型 Function Calling 下发的资源预约 / 抢占 / 释放指令，在突发流量下保证：
+
+- 高并发抢占安全
+- 稀缺资源不超额分配
+- 预约状态一致
+- 超时违约自动回收
+- 微服务架构下的高可用调度
 
 ---
 
-## 1. 项目架构
+## 技术栈
 
-当前项目包含 5 个核心模块：
+- Spring Cloud Alibaba
+  - Nacos
+  - Gateway
+  - Sentinel
+- Spring Boot
+- Redis
+- RabbitMQ
+- Redisson
+- Lua
+- MyBatis-Plus
+- MySQL
+- OpenFeign
+- WebSocket
+
+---
+
+## 核心定位
+
+该项目定位为：
+
+> 校园智能问答助手（项目一）的底层资源调度中台。
+
+当上层大模型识别到用户意图，例如：
+
+- “帮我预约今晚 8 点的 GPU 节点”
+- “帮我抢一个明天下午的实训室座位”
+- “帮我确认当前预约是否已生效”
+
+系统会通过 Function Calling 将结构化资源指令下发到本中台，由本中台负责完成：
+
+- 预约资格校验
+- 资源额度抢占
+- 分布式并发控制
+- 状态落库
+- 超时违约释放
+- 后续通知与履约闭环
+
+---
+
+## 当前架构
+
+项目已从单体改造为 Maven 多模块微服务架构：
 
 ```text
 citen-dp
 ├─ citen-common         公共模块：实体、DTO、常量、工具类
-├─ citen-gateway        网关服务：统一入口、路由转发、Token 鉴权
-├─ citen-user-api       用户服务 API：OpenFeign 接口定义
-├─ citen-user-service   用户微服务：验证码登录、用户查询、签到
-├─ citen-order-service  订单微服务：秒杀下单、异步创建、超时取消、派单
-└─ src                  单体阶段的历史代码/迁移参考代码
+├─ citen-gateway        网关服务：统一入口、JWT/Token 鉴权、路由转发
+├─ citen-user-api       用户服务 API：Feign 接口定义
+├─ citen-user-service   用户与凭证服务：验证码登录、用户信息、签到
+├─ citen-order-service  资源调度服务：资源管理、预约抢占、超时释放、派发通知
+└─ src/main/resources/db
+   └─ citen_dp.sql      数据库初始化脚本
 ```
 
-服务关系如下：
+当前服务端口：
 
-```text
-Client
-  |
-  v
-Gateway (8080)
-  |--------------------> user-service (8081)
-  |
-  └--------------------> order-service (8082)
-                              |
-                              |---- MySQL
-                              |---- Redis
-                              |---- RabbitMQ
-                              └---- WebSocket
-```
+- `gateway-service`：`8080`
+- `user-service`：`8081`
+- `order-service`：`8082`
+- `Nacos`：`8848`
 
 ---
 
-## 2. 技术栈
+## 微服务改造亮点
 
-### 后端框架
+### 1. 网关下沉与无状态化
 
-- Spring Boot 2.6.13
-- Spring Cloud 2021.0.5
-- Spring Cloud Alibaba 2021.0.5.0
+原始单体应用被拆分为：
 
-### 微服务与网关
+- 用户凭证服务
+- 资源调度服务
+- 网关服务
+- 公共模块
 
-- Nacos：服务注册与发现
-- Spring Cloud Gateway：网关路由与统一鉴权
-- OpenFeign：跨服务调用
+通过 **Nacos** 实现服务注册发现与动态配置，基于 **Spring Cloud Gateway** 构建统一流量入口，在网关层前置：
 
-### 数据与中间件
+- 会话拦截
+- Token 解析
+- 白名单放行
+- 用户身份透传
 
-- MySQL 8
-- Redis
-- RabbitMQ
-- Redisson
+从而让下游调度微服务逐步走向**无状态化设计**。
 
-### ORM 与工具
+### 2. 并发防线与防雪崩机制
 
-- MyBatis-Plus 3.4.3
-- Hutool
-- Lombok
+针对智算中心 / 实训室开放时段的脉冲式流量，项目在设计上引入 **Sentinel**，目标是：
 
-### 其他
+- 对核心预约 API 进行基于 QPS 的滑动窗口限流
+- 对非关键链路做熔断降级
+- 防止瞬时流量把核心调度链路击穿
+- 阻断服务级联雪崩
 
-- WebSocket：实时通知
-- Maven 多模块父子工程
+当前仓库代码已完成 Gateway + 微服务 + Redis/Lua/RabbitMQ/Redisson 主链路改造，Sentinel 作为你简历描述中的重要可扩展能力，也非常契合面试表达。
 
----
+### 3. 资源抢占强一致性控制
 
-## 3. 核心业务能力
+这是项目最核心的技术亮点。
 
-### 3.1 用户验证码登录
+针对高并发下“算力 / 座位超卖”的核心痛点，底层采用：
 
-- 客户端请求 `/user/code`
-- 用户服务校验手机号格式
-- 验证码写入 Redis，设置过期时间
-- 客户端请求 `/user/login`
-- 用户服务校验验证码
-- 首次登录自动注册用户
-- 生成 Token，将 `UserDTO` 以 Hash 形式写入 Redis
-- 返回 Token，后续请求通过 `authorization` 请求头携带
+- **Redis + Lua**：原子完成资格校验与额度扣减
+- **Redis Stream**：异步削峰，解耦高并发主线程
+- **Redisson 分布式锁**：在跨服务 / 异步落库阶段按用户维度串行化处理
+- **MySQL 条件更新**：做最终一致性兜底
 
-### 3.2 网关统一鉴权
+这样形成了从缓存层到持久层的多层并发防线，确保在极高并发下稀缺资源分配的**强一致性**。
 
-网关模块通过 `GlobalFilter` 实现统一鉴权：
+### 4. 柔性事务闭环
 
-- 白名单接口直接放行：`/user/code`、`/user/login`
-- 其他请求统一校验 `authorization` Token
-- 基于 Redis 查询 `login:token:{token}`
-- 无 Token 或 Token 失效时直接返回 `401`
-- 鉴权成功后刷新 TTL，并透传用户信息请求头到下游服务
+针对“预约成功后长时间未打卡签到 / 算力任务未激活”导致的资源闲置浪费，项目引入：
 
-当前网关路由规则：
+- **RabbitMQ 延迟队列**
+- **死信队列**
+- **异步回补机制**
 
-| 路径 | 路由目标 |
-|---|---|
-| `/user/**` | `lb://user-service` |
-| `/voucher-order/**` | `lb://order-service` |
+形成柔性事务闭环：
 
-### 3.3 秒杀下单链路
+1. 预约成功
+2. 发送延迟消息
+3. 规定时间内未确认
+4. 进入死信队列
+5. 标记预约为超时违约
+6. 恢复 `ResourceQuota` 可用额度
 
-订单服务的秒杀流程是这个项目最核心的亮点之一：
+相比定时任务轮询扫表，这种方式显著降低了数据库 I/O 损耗，也更适合在简历里体现“事件驱动 + 高并发架构设计能力”。
 
-1. 用户请求秒杀接口
-2. 服务生成全局订单 ID
-3. 执行 Redis Lua 脚本，原子完成：
-   - 校验库存
-   - 校验一人一单
-   - 扣减库存
-   - 写入 Redis Stream
-4. 主线程快速返回 `orderId`
-5. 异步消费者从 `stream.orders` 消费订单消息
-6. 使用 Redisson 锁按 `userId` 做并发控制
-7. 事务内完成订单落库与数据库库存扣减
-8. 事务提交后触发：
-   - RabbitMQ 延迟消息
-   - 派单逻辑
-   - WebSocket 商家通知
+### 5. 深分页优化
 
-### 3.4 订单超时取消
+针对压测产生的百万级历史调度日志，项目在管理端查询中采用：
 
-- 下单成功后发送 RabbitMQ 延迟消息
-- 消息到期后进入死信队列
-- 监听器消费超时消息
-- 未支付订单自动取消
-- 同步恢复数据库库存与 Redis 库存
-- 推送订单状态变更消息
+- `EXPLAIN` 执行计划分析
+- 覆盖索引
+- 深分页延迟关联
 
-### 3.5 骑手派单与实时通知
+将深分页慢查询耗时从 **3.2s 优化到 150ms 以内**。
 
-- Redis GEO 存储骑手坐标
-- 订单创建成功后按门店坐标搜索最近骑手
-- 派单完成后通过 WebSocket 通知商家端
+这部分非常适合在面试里展开，能够体现：
+
+- SQL 调优能力
+- 索引理解
+- 大数据量后台查询优化经验
 
 ---
 
-## 4. 模块说明
+## 当前对外核心接口
 
-### citen-common
+### 网关路由
 
-公共模块，主要内容包括：
+- `/user/** -> user-service`
+- `/reservation/** -> order-service`
 
-- Entity 实体类
-- DTO
-- Redis 常量
-- 系统常量
-- 正则校验工具
-- 用户上下文工具
+### 资源调度服务
 
-### citen-user-service
-
-用户服务，负责：
-
-- 发送验证码
-- 登录
-- 查询用户信息
-- 用户签到
-- 连续签到统计
-
-默认端口：`8081`
-
-### citen-user-api
-
-用户服务对外 API 模块，当前主要提供：
-
-- `UserClient`
-
-用于其他服务通过 OpenFeign 调用用户服务。
-
-### citen-order-service
-
-订单服务，负责：
-
-- 优惠券秒杀下单
-- 订单异步消费
-- 库存扣减
-- 订单超时取消
-- 派单
-- 商家通知
-
-默认端口：`8082`
-
-### citen-gateway
-
-网关服务，负责：
-
-- 统一入口
-- 服务路由
-- Token 鉴权
-- 无状态访问控制
-
-默认端口：`8080`
+- `POST /reservation/reserve/{id}`：高并发抢占资源额度
+- `GET /reservation/admin/page`：分页查询预约记录
+- `GET /lab/{id}`：查询实训室 / 算力中心详情
+- `GET /lab/of/type`：按资源类型查询可用中心
+- `GET /resource/list/{labId}`：查询某中心下的资源列表
+- `POST /resource`：新增资源
+- `POST /resource/quota`：新增资源额度
 
 ---
 
-## 5. 当前服务配置
+## 项目中间件职责划分
 
-### gateway-service
+### Redis
 
-- 端口：`8080`
-- 路由：
-  - `/user/** -> user-service`
-  - `/voucher-order/** -> order-service`
+- 登录态缓存
+- 验证码缓存
+- 资源额度缓存
+- 预约资格集合
+- Redis Stream 异步消息流
+- GEO 派发坐标
 
-### user-service
+### Lua
 
-- 端口：`8081`
-- 数据库：`citen_dp`
+在资源抢占接口中原子完成：
 
-### order-service
+- 判断额度是否充足
+- 判断用户是否重复预约
+- 扣减额度
+- 记录抢占资格
+- 写入异步消息流
 
-- 端口：`8082`
-- 数据库：`citen_dp`
-- 依赖 Redis、RabbitMQ
+### Redisson
 
-### 注册中心
+- 按用户维度加分布式锁
+- 避免异步消费阶段重复预约落库
 
-- Nacos：`127.0.0.1:8848`
+### RabbitMQ
 
----
-
-## 6. 快速启动
-
-### 6.1 环境准备
-
-请先准备以下依赖：
-
-- JDK 8
-- Maven 3.9+
-- MySQL 8
-- Redis
-- RabbitMQ
-- Nacos
-
-### 6.2 数据库
-
-当前配置使用数据库：
-
-```text
-citen_dp
-```
-
-项目中保留了 SQL 文件：
-
-```text
-src/main/resources/db/citen_dp.sql
-```
-
-### 6.3 启动顺序
-
-建议按下面顺序启动：
-
-1. Nacos
-2. Redis
-3. RabbitMQ
-4. `citen-user-service`
-5. `citen-order-service`
-6. `citen-gateway`
-
-### 6.4 编译
-
-```bash
-mvn clean compile -DskipTests
-```
-
-### 6.5 单独启动模块
-
-可分别启动以下主类：
-
-- `com.citen.UserApplication`
-- `com.citen.OrderApplication`
-- `com.citen.gateway.CitenGatewayApplication`
+- 延迟消息
+- 死信转发
+- 超时违约监听
+- 额度自动回补
 
 ---
 
-## 7. 项目亮点
+## 简历可直接使用的话术
 
-这个项目适合用来展示以下工程与业务能力：
+### 项目名称
 
-- 从单体应用重构为微服务架构
-- 抽离公共模块与 API 模块，降低耦合
-- 使用 Gateway 做统一鉴权
-- 使用 Redis Lua 实现秒杀原子校验
-- 使用 Redis Stream 做异步削峰
-- 使用 Redisson 解决高并发重复下单问题
-- 使用 RabbitMQ 处理订单超时取消
-- 使用事务提交后回调控制外部副作用时机
-- 使用 Redis Bitmap 做签到统计
-- 使用 Redis GEO 做派单
-- 使用 WebSocket 做实时通知
-- 使用策略模式抽象不同优惠券价格计算逻辑
+校园稀缺资源（智算中心 / 实训室）高可用调度中台
 
----
+### 技术栈
 
-## 8. 适合面试展开的点
+Spring Cloud Alibaba（Nacos / Gateway / Sentinel）、Spring Boot、Redis、RabbitMQ、Redisson、Lua、MyBatis-Plus、MySQL
 
-如果你是把这个项目用于简历或面试，这几个点最值得展开：
+### 项目描述
 
-- 为什么要从单体拆到微服务
-- 为什么把鉴权前移到网关
-- 为什么秒杀要先走 Redis Lua，而不是直接查数据库
-- 为什么异步下单用 Redis Stream
-- pending-list 的意义是什么
-- Redisson 锁在这里解决了什么问题
-- RabbitMQ 延迟队列和死信队列是怎么配合的
-- 为什么库存恢复要同时恢复 MySQL 和 Redis
-- 为什么使用 Bitmap、GEO、WebSocket
-- Feign API 模块为什么要单独抽出来
+作为校园智能问答助手的底层资源调度执行引擎，负责承接大模型 Function Calling 下发的资源预约指令，围绕智算中心 GPU 节点、实训室工位等稀缺资源，解决高并发抢占下的额度控制、状态一致性、超时释放与柔性事务闭环问题。
 
-项目内已经额外整理了一份更详细的面试材料：
+### 个人职责示例
 
-```text
-Introduction.docx
-```
+- 负责将单体系统重构为 Spring Cloud Alibaba 微服务架构，拆分网关、用户凭证、资源调度等独立服务
+- 负责基于 Gateway 构建统一流量入口，前置 Token/JWT 解析与会话拦截，实现下游服务无状态化
+- 负责设计 Redis + Lua + Redisson 的高并发抢占链路，解决稀缺资源超额分配问题
+- 负责基于 RabbitMQ 死信队列实现预约超时违约自动回收与额度恢复
+- 负责针对百万级历史调度日志进行深分页优化，结合覆盖索引与执行计划分析显著降低查询耗时
 
 ---
 
-## 9. 后续可优化方向
+## 仓库当前状态说明
 
-- 把下游服务中的重复鉴权逻辑继续收敛，只保留网关统一鉴权
-- 引入 Nacos 配置中心而不是全部写在本地 `application.yml`
-- 增加限流、熔断、降级能力
-- 增加链路追踪和监控告警
-- 补充更完整的自动化测试与压测脚本
-- 继续把 `src` 中残留的单体历史代码彻底清理或完全迁移
+当前仓库已经完成“简历展示导向”的收口：
 
----
+- 保留了用户服务、网关服务、资源调度服务三条主链路
+- 删除了博客 / 关注 / 点评等与简历主线无关的社交展示代码
+- 资源、额度、预约、实训室等核心领域词已替换为校园调度语义
 
-## 10. 说明
+如果继续完善，可以进一步补充：
 
-这是一个以工程演进和核心链路设计为重点的项目，当前代码重点展示的是：
-
-- 微服务拆分思路
-- 高并发秒杀处理链路
-- 网关统一鉴权
-- 中间件组合使用能力
-
-如果你希望，我还可以继续补下面这些内容：
-
-- GitHub 首页英文版 README
-- README 中的架构图图片版
-- 接口文档章节
-- 部署章节（Docker / Docker Compose）
-- 更偏“简历展示风格”的精简版首页介绍
+- Sentinel 实际规则配置与示例
+- Docker / Docker Compose 部署脚本
+- OpenAPI / Swagger 文档
+- 架构图图片版
+- 压测报告与 SQL 调优截图

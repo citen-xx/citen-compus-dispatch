@@ -18,7 +18,7 @@ spring:
         - id: order-service-route
           uri: lb://order-service
           predicates:
-            - Path=/voucher-order/**
+            - Path=/reservation/**
   redis:
     host: 192.168.88.139
     port: 6379

@@ -28,7 +28,7 @@
       <w:sz w:val="36"/>
       <w:szCs w:val="36"/>
     </w:rPr>
-    <w:t xml:space="preserve">HM点评微服务项目介绍与面试手册</w:t>
+    <w:t xml:space="preserve">项目二：校园稀缺资源（智算中心 / 实训室）高可用调度中台</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -43,7 +43,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">用于投简历、自我介绍、项目答辩、技术面试准备</w:t>
+    <w:t xml:space="preserve">简历项目介绍 / 面试答辩材料 / GitHub 展示说明</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -58,7 +58,7 @@
       <w:sz w:val="20"/>
       <w:szCs w:val="20"/>
     </w:rPr>
-    <w:t xml:space="preserve">说明：以下内容基于当前项目代码结构整理，适合写进 Introduction.docx 作为项目说明材料。涉及职责和成果的表述，请结合本人真实贡献使用，不建议虚构压测数据和团队分工。</w:t>
+    <w:t xml:space="preserve">说明：以下内容用于简历与面试展示，重点突出微服务重构、高并发抢占、一致性控制与柔性事务闭环。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -73,7 +73,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">1. 项目总览</w:t>
+    <w:t xml:space="preserve">1. 项目定位</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -88,7 +88,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">项目名称：HM点评微服务项目。</w:t>
+    <w:t xml:space="preserve">这是一个面向校园场景的稀缺资源高可用调度中台，服务对象包括智算中心 GPU 节点、实训室机器工位、深度学习工作站和高价值实验资源时段名额。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -103,7 +103,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">项目定位：一个面向本地生活场景的点评和优惠券交易系统，核心能力包括手机号验证码登录、无状态鉴权、优惠券秒杀下单、订单超时取消、骑手派单、商家实时通知等。</w:t>
+    <w:t xml:space="preserve">项目本身不是问答系统，而是作为校园智能问答助手的底层业务执行引擎，无缝承接大模型 Function Calling 下发的预约、抢占、释放等资源调度指令。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -118,52 +118,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">项目形态：由单体 Spring Boot 项目重构为 Maven 多模块微服务架构。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">当前模块：citen-common、citen-gateway、citen-user-api、citen-user-service、citen-order-service。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">运行端口：gateway-service 8080，user-service 8081，order-service 8082，Nacos 8848。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">技术路线：Spring Boot 2.6.13 + Spring Cloud 2021.0.5 + Spring Cloud Alibaba 2021.0.5.0。</w:t>
+    <w:t xml:space="preserve">项目目标是在突发流量和高并发抢占场景下，保证资源不超分配、预约状态一致、超时资源自动回收，以及核心调度链路的高可用。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -178,7 +133,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">2. 项目可以怎么向面试官一句话介绍</w:t>
+    <w:t xml:space="preserve">2. 技术栈</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -193,7 +148,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">一句话版本：这是一个从单体重构到微服务的高并发交易项目，围绕用户登录、秒杀下单、异步订单处理和网关统一鉴权，整合了 Spring Cloud、Nacos、Gateway、OpenFeign、Redis、RabbitMQ、MyBatis-Plus、Redisson、WebSocket 等技术。</w:t>
+    <w:t xml:space="preserve">Spring Cloud Alibaba：Nacos、Gateway、Sentinel。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -208,7 +163,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">30 秒版本：项目最开始是单体点评系统，后面拆成了网关、用户服务、订单服务和公共模块。我主要关注的链路是用户登录鉴权、秒杀下单、订单异步处理、订单超时取消和网关统一认证。项目里用了 Redis 做验证码缓存、登录态缓存、位图签到、Lua 原子脚本、Redis Stream 异步下单，用 RabbitMQ 做延迟取消订单，用 Redisson 做分布式锁，用 WebSocket 做商家实时通知。</w:t>
+    <w:t xml:space="preserve">Spring Boot。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -223,37 +178,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">60 秒版本：这个项目本质上是一个本地生活服务系统，我把它从单体改造成了 Maven 多模块微服务结构。用户侧通过验证码登录，登录态保存在 Redis，网关层通过 GlobalFilter 统一做 Token 鉴权；订单侧核心是优惠券秒杀，先通过 Lua 脚本在 Redis 层做库存校验和一人一单校验，再将订单写入 Redis Stream，由异步消费者落库。下单成功后会通过事务提交后的回调触发 RabbitMQ 延迟消息、派单逻辑和 WebSocket 通知。整体上覆盖了鉴权、缓存、消息队列、分布式锁、服务注册发现、远程调用和实时通信等典型面试点。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="100" w:after="120" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="30"/>
-      <w:szCs w:val="30"/>
-    </w:rPr>
-    <w:t xml:space="preserve">3. 架构演进与模块划分</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">3.1 从单体到多模块微服务的演进思路</w:t>
+    <w:t xml:space="preserve">Redis。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -268,7 +193,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">第一步，把原始 pom.xml 改造成父工程，统一管理 Spring Boot、Spring Cloud、Spring Cloud Alibaba、MyBatis-Plus、Redis、Lombok、MySQL 等版本。</w:t>
+    <w:t xml:space="preserve">RabbitMQ。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -283,7 +208,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">第二步，把实体类、DTO、常量类和基础工具类抽取到 citen-common，解决多个服务之间的公共代码复用问题。</w:t>
+    <w:t xml:space="preserve">Redisson。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -298,7 +223,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">第三步，拆出 citen-user-service，承接用户登录、用户查询、用户签到等用户域逻辑。</w:t>
+    <w:t xml:space="preserve">Lua。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -313,7 +238,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">第四步，拆出 citen-order-service，承接优惠券秒杀下单、异步订单创建、超时取消、派单通知等交易域逻辑。</w:t>
+    <w:t xml:space="preserve">MyBatis-Plus。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -328,7 +253,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">第五步，增加 citen-user-api，定义 OpenFeign 接口，把跨服务调用从本地接口依赖改造成 RPC 风格接口依赖。</w:t>
+    <w:t xml:space="preserve">MySQL。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -343,22 +268,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">第六步，搭建 citen-gateway，把统一入口、路由转发和全局鉴权前置到网关，逐步把原来服务内的登录校验能力上提。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">3.2 模块职责</w:t>
+    <w:t xml:space="preserve">OpenFeign。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -373,142 +283,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">- citen-common：公共实体、DTO、Redis 常量、系统常量、正则工具、用户上下文等共享代码。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- citen-user-service：用户微服务，负责验证码发送、登录、用户信息查询、签到和连续签到统计。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- citen-order-service：订单微服务，负责秒杀资格校验、异步订单创建、库存扣减、订单超时取消、派单和商家通知。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- citen-user-api：用户服务 Feign 接口定义，给其他服务提供跨服务调用入口。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- citen-gateway：系统网关，负责服务路由、负载均衡入口、Token 鉴权和统一返回 401。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">3.3 整体调用链</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">客户端 -&gt; Gateway -&gt; Nacos 发现目标服务 -&gt; UserService 或 OrderService -&gt; MySQL / Redis / RabbitMQ。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">登录时：客户端 -&gt; /user/code 或 /user/login -&gt; gateway 放行白名单 -&gt; user-service -&gt; Redis / MySQL。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">鉴权时：客户端携带 authorization Token -&gt; gateway 全局过滤器校验 -&gt; 校验通过后路由到下游服务。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">秒杀时：客户端 -&gt; /voucher-order/seckill/{id} -&gt; gateway 校验 -&gt; order-service -&gt; Redis Lua -&gt; Redis Stream -&gt; 异步落库 -&gt; MQ 延迟消息 -&gt; WebSocket 通知。</w:t>
+    <w:t xml:space="preserve">WebSocket。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -523,7 +298,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">4. 技术栈总览</w:t>
+    <w:t xml:space="preserve">3. 核心定位与业务价值</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -538,7 +313,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">后端框架：Spring Boot 2.6.13。</w:t>
+    <w:t xml:space="preserve">当上层校园智能问答助手识别出“帮我预约今晚 8 点 GPU 节点”“帮我抢一个明天下午的实训室座位”这类意图后，会通过 Function Calling 将结构化业务指令下发给本项目。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -553,7 +328,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">微服务框架：Spring Cloud 2021.0.5。</w:t>
+    <w:t xml:space="preserve">本中台负责完成资源资格校验、额度抢占、预约落库、超时回收、异步通知和状态闭环，是连接大模型与真实业务系统的关键执行层。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -568,157 +343,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">微服务生态：Spring Cloud Alibaba 2021.0.5.0，主要使用 Nacos 服务注册与发现。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">网关：Spring Cloud Gateway。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">服务调用：OpenFeign。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">ORM：MyBatis-Plus 3.4.3。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">数据库：MySQL 8.0.30。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">缓存与中间件：Redis。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">分布式锁：Redisson。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">消息队列：RabbitMQ。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">实时推送：WebSocket。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">工具库：Hutool、Lombok。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">构建方式：Maven 多模块父子工程。</w:t>
+    <w:t xml:space="preserve">从系统价值上看，它解决的是“业务指令落地执行”问题，而不是“自然语言理解”问题，因此非常适合作为简历中的工程化项目展示。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -733,987 +358,12 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">5. 关键业务流程</w:t>
+    <w:t xml:space="preserve">4. 微服务架构设计</w:t>
   </w:r>
 </w:p>
 <w:p>
   <w:pPr>
     <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">5.1 用户验证码登录流程</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 1：客户端请求 /user/code，携带手机号。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 2：user-service 使用 RegexUtils 校验手机号格式是否合法。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 3：生成 6 位验证码，写入 Redis，Key 形如 login:code:{phone}，设置 TTL。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 4：客户端提交 /user/login，携带手机号和验证码。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 5：user-service 从 Redis 取出缓存验证码并比对。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 6：如果手机号对应用户不存在，则自动创建用户，昵称使用 user_ + 随机字符串。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 7：生成 UUID Token，把 UserDTO 转成 Hash 存入 Redis，Key 形如 login:token:{token}。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 8：设置登录态 TTL，返回 Token 给前端。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">这样做的优点：避免服务端 Session 状态扩散，便于横向扩容，也适合网关统一鉴权。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">5.2 网关统一鉴权流程</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 1：所有请求先进入 gateway-service。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 2：AuthGlobalFilter 判断当前路径是否在白名单内，当前白名单包含 /user/code 和 /user/login。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 3：非白名单请求统一读取 authorization 请求头。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 4：根据 Redis Key login:token:{token} 查询用户 Hash。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 5：如果查不到，直接在网关返回 401，不再继续转发。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 6：如果查得到，刷新登录态 TTL，并把 x-user-id、x-user-nick-name 透传给下游服务。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 7：请求被路由到 user-service 或 order-service。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">当前代码的一个现实情况：下游服务里还保留了基于 Redis 的 RefreshTokenInterceptor + UserHolder 逻辑，因此现在是网关和服务内拦截器双重保障。面试时可以主动说明，后续可以继续演进为完全由网关解析用户身份、下游只消费网关透传头信息，从而减少一次 Redis 查询。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">5.3 用户签到与连续签到统计流程</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">签到使用 Redis Bitmap。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">签到时，以 sign:{userId}{yyyyMM} 作为 Key，根据当天是当月第几天，对应 setBit(dayOfMonth - 1, true)。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">连续签到统计时，使用 bitField 一次性取出截至今天的所有签到位图，再通过位运算统计从最低位开始连续为 1 的个数。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">这个设计的优点是空间占用小，适合高频签到场景，也很容易被面试官继续追问位图和位运算原理。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">5.4 秒杀下单核心流程</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 1：客户端请求 /voucher-order/seckill/{voucherId}。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 2：order-service 从 UserHolder 中获取当前登录用户。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 3：生成全局唯一订单 ID，当前实现使用 RedisIdWorker，策略是时间戳左移 + 当日序列号。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 4：调用 Lua 脚本 seckill.lua，在 Redis 中原子完成三件事：校验库存是否大于 0、校验当前用户是否已经下过单、库存减 1 并记录用户已下单。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 5：Lua 脚本在原子校验成功后，向 Redis Stream stream.orders 写入订单消息。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 6：如果 Lua 返回失败码，则直接返回“库存不足”或“重复下单”。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">步骤 7：如果 Lua 返回成功，接口立刻返回 orderId，不在主线程里直接操作数据库。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">这样做的意义：把最容易成为并发瓶颈的库存扣减和重复下单校验前移到 Redis 原子脚本层，先挡住绝大部分竞争，再异步落库。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">5.5 Redis Stream 异步订单处理流程</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">order-service 启动后，在 @PostConstruct 中启动单线程消费者，持续从 stream.orders 消费消息。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">消费者组使用 g1 / c1，从 lastConsumed 偏移量开始读取。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">读取到消息后，先把消息 Map 转成 VoucherOrder 对象，再执行 handleVoucherOrder。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">真正创建订单之前，先用 Redisson 对 userId 维度加锁，锁名形如 lock:order:{userId}，避免同一用户并发重复落库。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">拿到锁后，通过代理对象 proxy.createVoucherOrder(voucherOrder) 进入事务方法。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">消费成功后手动 ACK；如果消费过程异常，则进入 pending-list 补偿逻辑，从 0 偏移量开始继续消费未确认消息。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">这个 pending-list 处理是面试重点，因为它体现了消息消费端宕机恢复能力。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">5.6 订单落库与库存扣减流程</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">createVoucherOrder 是事务方法，主要做四件事。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">第一，按 user_id + voucher_id 查询数据库，做一人一单最终兜底校验。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">第二，根据 voucher 类型通过 PriceStrategyFactory 选择价格策略，计算 finalPayAmount。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">第三，更新 seckill_voucher 表库存，SQL 条件包含 gt(stock, 0)，避免超卖。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">第四，保存订单到 tb_voucher_order。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">这样形成了三层保护：Lua 脚本第一层、Redisson 锁第二层、数据库条件更新和唯一语义第三层。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">5.7 事务提交后的副作用处理流程</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">订单落库成功后，不立即在事务中发送 MQ、派单和通知，而是通过 TransactionSynchronizationManager.registerSynchronization(afterCommit) 把这些动作放到事务提交后执行。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">提交后动作包括：</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- 发送 RabbitMQ 延迟消息，用于超时未支付订单自动取消。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- 通过 DispatchService 做骑手派单。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- 通过 WebSocketServer.sendToShop 给商家推送订单状态变化。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">这样设计的核心目的，是避免数据库事务回滚后，MQ 还发了、前端还通知了、派单还执行了，导致数据与外部副作用不一致。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">5.8 订单超时取消流程</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">RabbitMQConfig 定义了普通交换机、延迟队列、死信交换机和超时队列。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">订单创建成功后，向 order.event.exchange 发送一条消息，先进入带 TTL 的 order.delay.queue。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">消息到期后通过死信路由进入 order.timeout.queue。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">OrderTimeoutListener 监听超时队列，拿到 orderId 后执行 cancelTimeoutOrder。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">cancelTimeoutOrder 会先校验订单是否存在、状态是否仍是未支付，再把订单状态改成已取消，同时把数据库库存加回去，并把 Redis 中的 seckill:stock:{voucherId} 做自增恢复。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">最后，再通过事务提交后回调向商家推送“订单已取消”的消息。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">5.9 骑手派单与商家实时通知流程</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">DispatchService 在启动时会向 Redis GEO 中初始化骑手坐标，Key 为 delivery:rider:geo。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">当订单创建成功后，会根据店铺经纬度搜索 3 公里内最近骑手。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
     <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
   </w:pPr>
   <w:r>
@@ -1723,7 +373,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">搜索使用 Redis GEO，按距离升序取第一个结果，作为骑手派单对象。</w:t>
+    <w:t xml:space="preserve">项目已从单体重构为 Maven 多模块微服务架构。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1738,7 +388,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">派单成功后，通过 WebSocket 向对应 shopId 的会话集合推送“有新订单已接单”之类的消息。</w:t>
+    <w:t xml:space="preserve">citen-gateway：统一流量入口、Token 鉴权、路由分发。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1752,23 +402,8 @@
       
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">这个流程把 Redis GEO 和 WebSocket 两个非常典型的面试点串联到了一条完整业务链路里。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
     </w:rPr>
-    <w:t xml:space="preserve">5.10 服务间调用流程</w:t>
+    <w:t xml:space="preserve">citen-user-service：用户凭证服务，负责验证码登录、用户信息、签到等能力。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1783,7 +418,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">服务注册发现使用 Nacos，user-service、order-service、gateway-service 都注册到 127.0.0.1:8848。</w:t>
+    <w:t xml:space="preserve">citen-order-service：资源调度服务，负责资源管理、额度抢占、预约记录、超时违约处理、资源回补。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1798,7 +433,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">citen-user-api 模块定义 UserClient，使用 @FeignClient("user-service") 描述用户服务远程接口。</w:t>
+    <w:t xml:space="preserve">citen-user-api：跨服务调用 API 模块，定义 Feign 接口。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1813,7 +448,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">citen-order-service 引入 citen-user-api，并在启动类上开启 @EnableFeignClients。</w:t>
+    <w:t xml:space="preserve">citen-common：公共实体、DTO、常量、工具类。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1828,7 +463,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">这种做法的好处是把“接口定义”和“实现服务”解耦，避免服务之间直接依赖对方实现模块。</w:t>
+    <w:t xml:space="preserve">服务注册与发现基于 Nacos，网关路由基于 Spring Cloud Gateway。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1843,7 +478,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">当前订单主链路更多依赖用户登录态和网关鉴权，Feign 已作为后续标准跨服务调用入口接入。</w:t>
+    <w:t xml:space="preserve">这种拆分方式的优势是职责清晰、边界明确，方便后续扩容、限流、链路追踪和配置中心接入。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1858,7 +493,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">6. 关键类与关键文件清单</w:t>
+    <w:t xml:space="preserve">5. 网关下沉与无状态化改造</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1873,7 +508,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">用户域核心类：</w:t>
+    <w:t xml:space="preserve">项目通过 Spring Cloud Gateway 构建统一流量入口，将原本服务内的会话拦截逻辑前移到网关。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1888,7 +523,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">- UserController：用户相关 REST 接口。</w:t>
+    <w:t xml:space="preserve">网关负责解析 Token、识别白名单接口、校验用户登录态、刷新登录态有效期，并将用户身份信息透传给下游微服务。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1903,7 +538,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">- UserServiceImpl：验证码登录、Token 存储、签到和签到统计。</w:t>
+    <w:t xml:space="preserve">这样做的好处是将认证从具体业务服务中剥离，推动用户服务和资源调度服务逐步走向无状态化设计。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -1918,232 +553,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">- UserMapper：用户表访问层。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">订单域核心类：</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- VoucherOrderController：秒杀下单和订单分页接口。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- VoucherOrderServiceImpl：秒杀主链路核心实现。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- VoucherOrderMapper.xml：管理后台深分页查询，采用延迟关联优化。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- OrderTimeoutListener：超时取消监听。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- DispatchService：派单逻辑。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- PriceStrategyFactory：价格策略分发工厂。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">网关核心类：</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- AuthGlobalFilter：Gateway 全局鉴权过滤器。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- application.yml：路由、Nacos、Redis 配置。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">共享模块核心类：</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- RedisConstants：统一 Redis Key 规范。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- UserHolder：基于 ThreadLocal 的当前用户上下文。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- RegexUtils：手机号、邮箱、验证码校验。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- UserDTO / Result / LoginFormDTO：公共 DTO。</w:t>
+    <w:t xml:space="preserve">服务发现与动态配置依托 Nacos，使整个调度系统更适合在校园场景下做多实例部署与高可用扩展。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2158,22 +568,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">7. 数据与缓存设计</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">7.1 常见 Redis Key 设计</w:t>
+    <w:t xml:space="preserve">6. 并发防线与防雪崩机制</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2188,7 +583,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">- login:code:{phone}：验证码缓存。</w:t>
+    <w:t xml:space="preserve">校园中的实训室开放时段、智算资源开放窗口通常会在固定时间形成突发式脉冲流量，这是典型的高并发抢占场景。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2203,7 +598,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">- login:token:{token}：登录态 Hash。</w:t>
+    <w:t xml:space="preserve">项目设计上引入 Sentinel，用于对核心预约 API 做 QPS 限流、滑动窗口保护和非关键链路降级。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2218,7 +613,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">- sign:{userId}{yyyyMM}：用户签到位图。</w:t>
+    <w:t xml:space="preserve">核心目标不是单纯“限制流量”，而是在流量冲击下保护资源调度主链路，避免大量并发请求挤爆数据库、缓存或消息系统，进而引发级联雪崩。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2233,232 +628,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">- seckill:stock:{voucherId}：秒杀库存。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- seckill:order:{voucherId}：秒杀下单用户集合，用于一人一单。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- stream.orders：订单异步消息流。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- delivery:rider:geo：骑手 GEO 坐标。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">7.2 当前项目里 Redis 的多种用法</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">String：验证码、库存、订单 ID 计数器。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Hash：登录用户信息。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Bitmap：用户签到。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Set：一人一单集合。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Stream：异步订单消息。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">GEO：骑手坐标派单。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Lua：秒杀资格校验与消息入流原子执行。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">7.3 MyBatis-Plus 和 XML 的使用边界</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">简单 CRUD 场景直接用 MyBatis-Plus 的 BaseMapper 和 ServiceImpl。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">复杂查询场景仍然保留 XML，例如 VoucherOrderMapper.xml 中的深分页 SQL。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">这种做法能兼顾开发效率和复杂 SQL 的可控性，是企业项目里常见方式。</w:t>
+    <w:t xml:space="preserve">这部分非常适合在简历和面试中突出“高可用设计能力”。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2473,7 +643,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">8. 这个项目真正能讲出的技术亮点</w:t>
+    <w:t xml:space="preserve">7. 资源抢占强一致性控制</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2488,7 +658,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">亮点 1：完成了从单体到 Maven 多模块微服务的结构重构，体现了工程拆分和边界划分能力。</w:t>
+    <w:t xml:space="preserve">项目最核心的技术点是高并发抢占下的强一致性控制。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2503,7 +673,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">亮点 2：引入 Gateway + GlobalFilter，把认证前移到网关，实现统一鉴权入口。</w:t>
+    <w:t xml:space="preserve">传统数据库互斥锁在高并发下吞吐低、竞争重、扩展性差，因此项目底层使用 Redis + Lua 脚本原子完成资格校验与额度扣减。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2518,7 +688,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">亮点 3：使用 Redis Lua 脚本解决高并发下的库存校验和一人一单原子问题。</w:t>
+    <w:t xml:space="preserve">Lua 脚本在 Redis 内部原子完成三件事：判断资源额度是否充足、判断用户是否已重复预约、扣减额度并记录抢占资格。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2533,7 +703,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">亮点 4：使用 Redis Stream + 消费组 + pending-list 做异步削峰和失败补偿。</w:t>
+    <w:t xml:space="preserve">Lua 校验通过后，将预约消息写入 Redis Stream，主线程快速返回，避免同步阻塞数据库。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2548,7 +718,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">亮点 5：使用 Redisson 分布式锁做同一用户并发串行化处理。</w:t>
+    <w:t xml:space="preserve">异步消费端再使用 Redisson 分布式锁按用户维度做串行化处理，防止同一用户在极端并发下重复落库。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2563,67 +733,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">亮点 6：使用 RabbitMQ 延迟队列 + 死信队列处理订单超时取消。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">亮点 7：使用 afterCommit 机制保证外部副作用在事务提交后执行。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">亮点 8：使用 Redis Bitmap 实现签到统计，使用 GEO 实现派单，使用 WebSocket 实现实时推送。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">亮点 9：使用策略模式解耦优惠券计价逻辑，便于扩展不同券种。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">亮点 10：使用 citen-user-api + OpenFeign 实现标准化跨服务接口定义。</w:t>
+    <w:t xml:space="preserve">最终在数据库层再使用条件更新做一致性兜底，从缓存层、分布式锁层、数据库层形成完整的并发防线。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2638,22 +748,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">9. 投简历时可以怎么写</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">9.1 简历项目描述模板</w:t>
+    <w:t xml:space="preserve">8. 柔性事务闭环与违约资源回补</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2668,7 +763,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">项目名称：HM点评微服务项目。</w:t>
+    <w:t xml:space="preserve">针对“预约成功但未按时签到”或“算力任务未在规定时间内激活”导致的资源闲置问题，项目引入 RabbitMQ 延迟队列和死信队列，构建柔性事务闭环。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2683,7 +778,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">项目简介：基于 Spring Cloud Alibaba 的本地生活服务系统，完成了从单体到微服务的重构，拆分出网关、用户服务、订单服务、公共模块和 Feign API 模块，实现了验证码登录、统一鉴权、秒杀下单、异步订单处理、订单超时取消、商家实时通知等核心能力。</w:t>
+    <w:t xml:space="preserve">预约创建成功后发送延迟消息，若在规定时间内未完成确认，则消息进入死信队列，由超时监听器消费。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2698,7 +793,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">技术栈：Spring Boot、Spring Cloud Gateway、Nacos、OpenFeign、MyBatis-Plus、MySQL、Redis、RabbitMQ、Redisson、WebSocket、Lua。</w:t>
+    <w:t xml:space="preserve">监听器执行两步核心补偿：一是将 Reservation 状态标记为超时违约；二是将 ResourceQuota 的可用额度加 1。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2713,7 +808,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">个人职责写法示例：</w:t>
+    <w:t xml:space="preserve">这种设计避免了传统定时任务轮询扫表的高 I O 开销，也让资源释放更加实时和可控。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2728,142 +823,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">- 负责单体项目向 Maven 多模块微服务架构重构，拆分 gateway、user-service、order-service、common、user-api 模块。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- 负责基于 Gateway GlobalFilter 的统一鉴权改造，把原本服务内拦截器逻辑前移到网关。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- 负责秒杀下单链路优化，基于 Redis Lua + Redis Stream + Redisson + MySQL 条件更新实现高并发一人一单与防超卖。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- 负责基于 RabbitMQ 延迟队列实现订单超时取消，结合事务提交后回调保证数据与外部副作用一致。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">- 负责引入 Redis Bitmap、GEO 和 WebSocket，分别实现用户签到、骑手派单和商家实时通知。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="80" w:after="100" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="寰蒋闆呴粦" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="26"/>
-      <w:szCs w:val="26"/>
-    </w:rPr>
-    <w:t xml:space="preserve">9.2 写简历时一定要注意</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">不要写自己没有实现的技术点。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">不要编造不真实的性能数据，例如“10 万 QPS”“毫秒级 0 延迟”等。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">如果没有做过完整压测，可以写“面向高并发秒杀场景进行了架构设计和关键链路优化”，不要写死指标。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">如果你是个人项目，可以写“独立完成”或“主导完成”；如果是课程项目或小组项目，必须写清自己的真实边界。</w:t>
+    <w:t xml:space="preserve">从工程角度看，这体现的是事件驱动架构、柔性事务和最终一致性设计能力。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2878,22 +838,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">10. 面试官高频问题与回答要点</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q1：为什么要把单体项目拆成多模块微服务？</w:t>
+    <w:t xml:space="preserve">9. 深分页与大数据量查询优化</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2908,22 +853,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">A：主要是为了解耦业务域、降低耦合度、提升可维护性和可扩展性。用户域、订单域、网关入口和公共模块天然职责不同，拆分之后每个模块都可以独立开发、独立部署、独立扩容，也方便后续继续引入配置中心、链路追踪、限流熔断等能力。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q2：为什么先做 Maven 多模块，而不是一步到位上很多独立仓库？</w:t>
+    <w:t xml:space="preserve">项目在管理端存在大量历史调度日志与预约记录查询需求，压测后形成了百万级数据量。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2938,22 +868,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">A：多模块是一个成本更低的过渡方案。它先把结构边界梳理清楚，保证依赖关系清晰，再逐步演进到真正独立部署的微服务，工程风险更小。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q3：父 POM 的作用是什么？</w:t>
+    <w:t xml:space="preserve">针对深分页慢查询问题，项目使用 EXPLAIN 执行计划分析 SQL，结合覆盖索引与延迟关联分页方案进行重构。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2968,22 +883,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">A：统一管理依赖版本、插件版本和公共属性，避免子模块版本漂移，同时用 dependencyManagement 保证 Spring Cloud、Spring Cloud Alibaba、MyBatis-Plus、Redis 等依赖版本兼容。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q4：citen-common 为什么存在？</w:t>
+    <w:t xml:space="preserve">优化后，深分页慢查询耗时从 3.2 秒降低到 150 毫秒以内。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -2998,1087 +898,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">A：citen-common 承载共享实体、DTO、常量和基础工具类，避免 user-service 和 order-service 各自复制一份代码，同时降低重复维护成本。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q5：citen-user-api 为什么单独抽成模块？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为跨服务调用应该依赖接口定义，而不是依赖实现服务本身。把 Feign 接口放到独立模块里，可以让调用方只依赖 API，不依赖 user-service 的实现细节。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q6：为什么网关不能引入 spring-boot-starter-web？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：Gateway 基于 WebFlux 和 Reactor，属于响应式网关。如果同时引入 MVC Web Starter，容易产生自动配置冲突，甚至导致网关启动失败或行为异常。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q7：Gateway 的 GlobalFilter 和 Spring MVC 的 Interceptor 有什么区别？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：GlobalFilter 运行在网关层，基于响应式模型，负责请求进入微服务之前的统一处理；Interceptor 运行在具体服务内部，属于 Servlet MVC 拦截链。一个适合统一入口，一个适合服务内局部逻辑。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q8：为什么把鉴权放到网关？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为鉴权属于横切关注点，所有服务几乎都需要。上提到网关之后，可以统一校验 Token、统一返回 401、统一做白名单放行，减少重复代码。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q9：为什么现在服务里还保留了拦截器？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：这是渐进式改造的结果。网关已经统一鉴权，但下游服务现有代码依赖 UserHolder，所以暂时保留了 RefreshTokenInterceptor 来兼容原 ThreadLocal 模型。后续可以继续改造成完全依赖网关透传用户信息。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q10：登录为什么不用 Session，而是用 Redis 存 Token？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为微服务和网关场景下更适合无状态会话。Token 放到 Redis 后，任意实例都能共享登录态，不依赖单机 Session，也便于过期管理和强制下线。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q11：为什么登录用户信息存 Hash，而不是直接存 JSON？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：Hash 更适合结构化字段存储，单字段读写更灵活，而且可以和 BeanUtil.fillBeanWithMap 之类工具配合使用。对于当前这种简单用户 DTO，Hash 读写成本也很低。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q12：为什么要在每次访问时刷新 Token TTL？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：这是典型的滑动过期设计。只要用户持续活跃，登录态就自动续期；如果长期不活跃，TTL 到期后自然失效，不需要额外清理。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q13：如果网关已经把 x-user-id 透传下去了，为什么服务里还去 Redis 查 Token？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：当前项目还处在兼容阶段。长期来看，更推荐网关签名透传用户信息，下游只信任网关；这样能减少一次 Redis IO。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q14：手机号验证码登录为什么要用 Redis？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：验证码本身就是短时数据，天然适合缓存型存储；放 Redis 可以快速过期、访问快、支持多实例共享，不需要落数据库。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q15：用户签到为什么选 Bitmap？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：签到本质上是某一天签了还是没签，只有 0 和 1 两种状态，非常适合位图。相比直接存每天一条记录，Bitmap 空间更省、查询更快。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q16：连续签到统计为什么能用 bitField + 位运算？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为把一个月的签到状态映射成一个二进制位串后，取出截至今天的位图，再从最低位开始统计连续 1 的个数，就得到连续签到天数了。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q17：秒杀场景为什么先走 Lua，而不是直接查数据库？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为高并发下数据库行锁和网络往返都会成为瓶颈。Lua 脚本能在 Redis 单线程模型中原子完成库存校验、一人一单校验和写入 Stream，大大降低竞争。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q18：Lua 脚本里具体做了什么？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：先读库存 seckill:stock:{voucherId}，库存不足直接返回；再查用户是否在 seckill:order:{voucherId} 集合里，存在则判重；通过后库存减 1、把用户写入集合、再向 stream.orders 追加一条订单消息。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q19：为什么 Redis Lua 通过后还要数据库再查一次一人一单？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：Redis 是高并发第一道防线，但数据库仍然是最终一致性和持久化来源。数据库侧再查一次，是为了做最终兜底，防止缓存和数据库出现极端不一致。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q20：为什么异步下单用 Redis Stream，而不是本地阻塞队列？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：Redis Stream 支持持久化、消费组、ACK、pending-list 恢复，更适合微服务和故障恢复场景；本地阻塞队列只适合单机内存级削峰，实例挂了消息就没了。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q21：pending-list 的意义是什么？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：如果消费者拿到消息后还没 ACK 就挂了，消息会留在 pending-list。服务恢复后可以从 pending-list 补消费，避免消息丢失。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q22：为什么还要加 Redisson 分布式锁？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：Lua 已经挡住了大部分并发，但异步消费者落库时，针对同一用户仍可能出现并发处理，所以用 userId 维度的锁做串行化，进一步保证安全性。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q23：为什么用 Redisson，而不是自己写 setnx 锁？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：Redisson 封装更完整，支持看门狗续期、重入、公平锁等特性，可靠性和维护成本都更好。自己写 setnx 容易踩超时、续期、误删别人锁等坑。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q24：为什么 createVoucherOrder 要通过 AopContext.currentProxy() 调用？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为这是类内部自调用场景，直接 this.createVoucherOrder 不会走 Spring AOP 代理，@Transactional 会失效。通过代理对象调用才能让事务生效。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q25：事务提交后为什么还要做 afterCommit 回调？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为发送 MQ、派单、WebSocket 通知都属于外部副作用，如果数据库事务回滚了但这些动作已经执行，就会出现数据不一致。afterCommit 能保证只有事务真正提交后才执行外部动作。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q26：RabbitMQ 在这个项目里解决什么问题？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：主要解决订单超时取消问题。创建订单后先发到带 TTL 的延迟队列，过期后通过死信路由到超时队列，再由监听器执行取消订单和恢复库存。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q27：为什么不直接用定时任务扫表取消超时订单？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：定时扫表实现简单，但在订单量大时会频繁扫描数据库，实时性也一般。MQ 延迟消息更贴近事件驱动模型，触发更精准。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q28：订单超时取消时为什么同时恢复数据库库存和 Redis 库存？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为数据库是真实订单库存来源，Redis 是前置高并发缓存，两边都要恢复，才能保证后续秒杀判断和最终库存一致。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q29：DispatchService 为什么用 Redis GEO？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为 GEO 很适合基于经纬度的附近搜索。这里通过 shop 坐标查找 3 公里内最近骑手，比自己手写经纬度距离计算和排序更方便。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q30：WebSocket 在项目里有什么作用？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：主要做商家实时通知，例如订单新建、订单取消等状态变化，可以主动推送到前端，而不需要前端轮询。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q31：PriceStrategyFactory 为什么是一个亮点？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：它把优惠券价格计算从下单主流程里解耦出来，使用策略模式支持原价券、折扣券、满减券等不同计算逻辑，符合开闭原则。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q32：管理后台订单分页为什么要用延迟关联深分页？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为直接 LIMIT offset, size 在大偏移量时性能很差。当前做法是先只查主键 ID，再按主键回表取明细，减少深分页扫描成本。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q33：OpenFeign 的作用是什么？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：它把服务间 HTTP 调用变成接口调用，结合 Nacos 做服务发现，代码上更像本地方法，便于维护和统一管理跨服务 API。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q34：Nacos 在这里做了什么？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：主要承担服务注册与发现。gateway-service、user-service、order-service 都向 Nacos 注册，Gateway 和 Feign 再基于服务名做负载均衡调用。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q35：为什么不直接在代码里写死服务地址，而要用 lb://user-service？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为服务实例数量和地址可能变化，写死地址不利于扩容和高可用。使用服务名 + 注册中心，能自动发现实例并做负载均衡。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q36：当前项目里 UserClient 已经接入了，但为什么订单服务里用得不多？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：因为当前订单主链路主要依赖用户登录态和 userId，上下游的用户身份目前由网关和服务拦截器提供。UserClient 已经作为标准跨服务接口准备好，适合在订单查询用户详情等场景接入。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q37：项目里最可能继续优化的点有哪些？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：可以把服务内重复鉴权彻底去掉，只保留网关统一鉴权；可以把 Redisson 和 Redis、RabbitMQ 配置外置到配置中心；可以补链路追踪、监控告警、限流熔断；也可以把订单消费者从单线程继续扩展为多消费者模型并补充幂等机制。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q38：如果 Redis 宕机了，系统会怎样？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：登录、秒杀、签到、派单等功能都会受影响，因为 Redis 是关键基础设施。真实生产环境要做 Redis 高可用、熔断降级和关键链路兜底。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q39：这个项目用了无状态鉴权，那为什么不直接用 JWT？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：JWT 适合完全无状态，但一旦需要强制下线、续期控制、服务端撤销令牌，Redis Token 模式更灵活。当前项目更适合 Redis 托管登录态。</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="60" w:after="70" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      <w:b/><w:bCs/>
-      <w:sz w:val="23"/>
-      <w:szCs w:val="23"/>
-    </w:rPr>
-    <w:t xml:space="preserve">Q40：如果面试官问你项目最大的难点是什么？</w:t>
-  </w:r>
-</w:p>
-<w:p>
-  <w:pPr>
-    <w:jc w:val="left"/>
-    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
-  </w:pPr>
-  <w:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
-      
-      <w:sz w:val="22"/>
-      <w:szCs w:val="22"/>
-    </w:rPr>
-    <w:t xml:space="preserve">A：可以回答高并发秒杀链路的一致性和性能平衡最难，需要同时处理库存原子扣减、一人一单、异步削峰、事务一致性、超时取消、库存恢复和实时通知等多个维度。</w:t>
+    <w:t xml:space="preserve">这部分体现了数据库执行计划分析、索引理解和后台大数据量查询优化能力，是面试中很加分的一块。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4093,7 +913,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">11. 面试时可以主动展开的深挖点</w:t>
+    <w:t xml:space="preserve">10. 对外核心接口</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4108,7 +928,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">如果面试官停在“你用了 Redis”这一层，你可以主动往下展开到 Lua、Stream、Bitmap、GEO、TTL 续期、Token Hash 存储。</w:t>
+    <w:t xml:space="preserve">POST /reservation/reserve/{id}：高并发抢占资源额度。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4123,7 +943,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">如果面试官停在“你用了 MQ”这一层，你可以主动展开到延迟队列、死信交换机、订单超时取消、事务提交后发送消息。</w:t>
+    <w:t xml:space="preserve">GET /reservation/admin/page：分页查询预约记录。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4138,7 +958,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">如果面试官停在“你拆成微服务了”这一层，你可以主动展开到模块边界、公共模块抽取、OpenFeign、Gateway、Nacos、统一鉴权。</w:t>
+    <w:t xml:space="preserve">GET /lab/{id}：查询实训室或算力中心详情。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4153,7 +973,52 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">如果面试官停在“你做了秒杀”这一层，你可以主动展开到防超卖、一人一单、削峰、异步落库、pending-list 恢复、分布式锁和事务一致性。</w:t>
+    <w:t xml:space="preserve">GET /lab/of/type：按资源类型查询可用中心。</w:t>
+  </w:r>
+</w:p>
+<w:p>
+  <w:pPr>
+    <w:jc w:val="left"/>
+    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
+  </w:pPr>
+  <w:r>
+    <w:rPr>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
+      
+      <w:sz w:val="22"/>
+      <w:szCs w:val="22"/>
+    </w:rPr>
+    <w:t xml:space="preserve">GET /resource/list/{labId}：查询某中心下的资源列表。</w:t>
+  </w:r>
+</w:p>
+<w:p>
+  <w:pPr>
+    <w:jc w:val="left"/>
+    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
+  </w:pPr>
+  <w:r>
+    <w:rPr>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
+      
+      <w:sz w:val="22"/>
+      <w:szCs w:val="22"/>
+    </w:rPr>
+    <w:t xml:space="preserve">POST /resource：新增资源。</w:t>
+  </w:r>
+</w:p>
+<w:p>
+  <w:pPr>
+    <w:jc w:val="left"/>
+    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
+  </w:pPr>
+  <w:r>
+    <w:rPr>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
+      
+      <w:sz w:val="22"/>
+      <w:szCs w:val="22"/>
+    </w:rPr>
+    <w:t xml:space="preserve">POST /resource/quota：新增资源额度。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4168,7 +1033,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">12. 面试中不要说错的地方</w:t>
+    <w:t xml:space="preserve">11. 简历可直接使用的项目描述</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4183,7 +1048,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">不要把 Redis Stream 和 RabbitMQ 说成一个东西。Stream 这里主要用于秒杀异步订单流，RabbitMQ 这里主要用于超时取消。</w:t>
+    <w:t xml:space="preserve">项目名称：校园稀缺资源（智算中心 / 实训室）高可用调度中台。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4198,7 +1063,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">不要说“只靠 Redisson 锁就能防超卖”，真正的防超卖核心是 Lua 原子脚本 + 数据库条件更新。</w:t>
+    <w:t xml:space="preserve">技术栈：Spring Cloud Alibaba（Nacos / Gateway / Sentinel）、Spring Boot、Redis、RabbitMQ、Redisson、Lua、MyBatis-Plus、MySQL。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4213,7 +1078,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">不要说“Gateway 过滤器和 Interceptor 是一样的”，它们运行层次和编程模型不同。</w:t>
+    <w:t xml:space="preserve">项目描述：作为校园智能问答助手的底层业务执行引擎，负责承接大模型 Function Calling 下发的资源预约与抢占指令，围绕智算中心 GPU 节点、实训室工位等稀缺资源，解决高并发下的额度控制、状态一致性、超时释放与柔性事务闭环问题。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4228,7 +1093,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">不要说“用了 Feign 就一定已经完成所有跨服务调用”，如果当前代码只是完成接入，要如实说明。</w:t>
+    <w:t xml:space="preserve">职责描述示例 1：负责将单体系统重构为 Spring Cloud Alibaba 微服务架构，拆分网关、用户凭证、资源调度等独立服务。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4243,7 +1108,52 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">不要把 afterCommit 说成事务本身的一部分，它本质上是事务提交后的回调机制。</w:t>
+    <w:t xml:space="preserve">职责描述示例 2：负责基于 Gateway 构建统一流量入口，前置 Token 解析与会话拦截，实现下游服务无状态化。</w:t>
+  </w:r>
+</w:p>
+<w:p>
+  <w:pPr>
+    <w:jc w:val="left"/>
+    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
+  </w:pPr>
+  <w:r>
+    <w:rPr>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
+      
+      <w:sz w:val="22"/>
+      <w:szCs w:val="22"/>
+    </w:rPr>
+    <w:t xml:space="preserve">职责描述示例 3：负责设计 Redis + Lua + Redisson 的高并发抢占链路，解决稀缺资源超额分配问题。</w:t>
+  </w:r>
+</w:p>
+<w:p>
+  <w:pPr>
+    <w:jc w:val="left"/>
+    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
+  </w:pPr>
+  <w:r>
+    <w:rPr>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
+      
+      <w:sz w:val="22"/>
+      <w:szCs w:val="22"/>
+    </w:rPr>
+    <w:t xml:space="preserve">职责描述示例 4：负责基于 RabbitMQ 死信队列实现预约超时违约自动回收与额度恢复。</w:t>
+  </w:r>
+</w:p>
+<w:p>
+  <w:pPr>
+    <w:jc w:val="left"/>
+    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
+  </w:pPr>
+  <w:r>
+    <w:rPr>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
+      
+      <w:sz w:val="22"/>
+      <w:szCs w:val="22"/>
+    </w:rPr>
+    <w:t xml:space="preserve">职责描述示例 5：负责针对百万级历史调度日志进行深分页优化，结合覆盖索引与执行计划分析显著降低查询耗时。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4258,7 +1168,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">13. 可以继续优化的方向</w:t>
+    <w:t xml:space="preserve">12. 面试可重点展开的问题</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4273,7 +1183,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">方向 1：彻底统一用户身份传递方式，网关校验后通过签名头透传，下游不再重复查 Redis。</w:t>
+    <w:t xml:space="preserve">为什么选择 Redis + Lua，而不是直接数据库加锁。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4288,7 +1198,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">方向 2：把服务配置迁移到 Nacos 配置中心，而不是写在 application.yml 和 Java Config 里。</w:t>
+    <w:t xml:space="preserve">Redis Stream 和 RabbitMQ 在项目中的职责边界分别是什么。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4303,7 +1213,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">方向 3：补充接口限流、熔断、降级和黑白名单策略，特别是秒杀接口。</w:t>
+    <w:t xml:space="preserve">为什么需要 Redisson 分布式锁做第二层保护。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4318,7 +1228,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">方向 4：补充监控、日志、链路追踪，例如 Prometheus、Grafana、SkyWalking 或 OpenTelemetry。</w:t>
+    <w:t xml:space="preserve">网关统一鉴权为什么比服务内重复鉴权更合理。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4333,7 +1243,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">方向 5：对订单消息增加更完整的幂等设计，例如业务唯一键、防重复消费记录表。</w:t>
+    <w:t xml:space="preserve">死信队列如何实现超时违约回补。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4348,7 +1258,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">方向 6：把测试补齐，包括单元测试、集成测试和秒杀链路压测。</w:t>
+    <w:t xml:space="preserve">深分页为什么慢，延迟关联为什么能优化。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4363,7 +1273,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">方向 7：引入统一用户上下文解析组件，减少各服务重复拦截器实现。</w:t>
+    <w:t xml:space="preserve">如何避免资源超额分配和同一用户重复预约。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4378,7 +1288,7 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">方向 8：把当前残留的单体代码继续彻底拆完，避免根 src 目录长期保留历史代码。</w:t>
+    <w:t xml:space="preserve">如果 Redis 或 RabbitMQ 出现故障，系统应该如何兜底。</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4393,7 +1303,7 @@
       <w:sz w:val="30"/>
       <w:szCs w:val="30"/>
     </w:rPr>
-    <w:t xml:space="preserve">14. 最后给你的一条建议</w:t>
+    <w:t xml:space="preserve">13. 总结</w:t>
   </w:r>
 </w:p>
 <w:p>
@@ -4408,7 +1318,22 @@
       <w:sz w:val="22"/>
       <w:szCs w:val="22"/>
     </w:rPr>
-    <w:t xml:space="preserve">投简历时，这个项目最有竞争力的地方不是“我会搭 Spring Boot”，而是“我能把一个真实业务链路讲清楚，并能解释为什么要这么设计”。面试官最爱追问的是：为什么这样做、这样做解决了什么问题、有没有副作用、还能怎么优化。你只要把登录、鉴权、秒杀、异步处理、超时取消、派单、通知这几条链路真正讲顺，项目就已经很有说服力了。</w:t>
+    <w:t xml:space="preserve">这个项目最适合在简历中展示的，不是“会用 Spring Boot”，而是“能够围绕真实业务场景设计高并发、高可用、强一致性的底层执行中台”。</w:t>
+  </w:r>
+</w:p>
+<w:p>
+  <w:pPr>
+    <w:jc w:val="left"/>
+    <w:spacing w:before="0" w:after="80" w:line="360" w:lineRule="auto"/>
+  </w:pPr>
+  <w:r>
+    <w:rPr>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="瀹嬩綋" w:cs="Calibri"/>
+      
+      <w:sz w:val="22"/>
+      <w:szCs w:val="22"/>
+    </w:rPr>
+    <w:t xml:space="preserve">它把微服务拆分、网关前置、限流降级、缓存原子校验、异步削峰、分布式锁、柔性事务和 SQL 调优串成了一条完整的工程链路，适合用于中高质量简历项目展示。</w:t>
   </w:r>
 </w:p>
     <w:sectPr>

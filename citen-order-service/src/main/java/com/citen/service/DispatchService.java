@@ -1,7 +1,7 @@
 package com.citen.service;
 
 import com.citen.entity.Lab;
-import com.citen.mapper.ShopMapper;
+import com.citen.mapper.LabMapper;
 import com.citen.utils.RedisConstants;
 import com.citen.websocket.WebSocketServer;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ public class DispatchService {
     private StringRedisTemplate stringRedisTemplate;
 
     @javax.annotation.Resource
-    private ShopMapper shopMapper;
+    private LabMapper labMapper;
 
     @PostConstruct
     public void initRiderGeoData() {
@@ -52,7 +52,7 @@ public class DispatchService {
             return;
         }
 
-        Lab lab = shopMapper.selectById(labId);
+        Lab lab = labMapper.selectById(labId);
         if (lab == null || lab.getX() == null || lab.getY() == null) {
             LOG.warn("dispatch skipped, lab location missing, orderId={}, labId={}", orderId, labId);
             return;

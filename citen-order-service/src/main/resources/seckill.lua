@@ -16,24 +16,22 @@ local reservationKey = 'resource:reservation:' .. resourceId
 -- 3.1. 判断算力/座位额度是否充足
 local quota = redis.call('get', quotaKey)
 if (quota == false or tonumber(quota) == nil or tonumber(quota) <= 0) then
-    -- 3.2. 额度不足，返回 1
     return 1
 end
 
--- 3.3. 判断用户是否已经抢占过该资源
+-- 3.2. 判断用户是否已经抢占过该资源
 if (redis.call('sismember', reservationKey, userId) == 1) then
-    -- 3.4. 已存在抢占记录，返回 2
     return 2
 end
 
--- 3.5. 扣减额度
+-- 3.3. 扣减额度
 redis.call('incrby', quotaKey, -1)
--- 3.6. 记录抢占资格
+-- 3.4. 记录抢占资格
 redis.call('sadd', reservationKey, userId)
--- 3.7. 发送消息到队列，异步创建预约记录
+-- 3.5. 发送异步消息，后续创建预约记录
 redis.call(
     'xadd',
-    'stream.orders',
+    'stream.reservations',
     '*',
     'userId', tostring(userId),
     'resourceId', tostring(resourceId),

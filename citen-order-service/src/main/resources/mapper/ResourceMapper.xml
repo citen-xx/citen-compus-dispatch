@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.citen.mapper.ResourceMapper">
+
+    <select id="queryResourcesOfLab" resultType="com.citen.entity.Resource" parameterType="java.lang.Long">
+        SELECT
+            r.id,
+            r.lab_id,
+            r.name,
+            r.description,
+            r.usage_rules,
+            r.reserve_value,
+            r.confirm_value,
+            r.resource_mode,
+            q.quota,
+            q.begin_time,
+            q.end_time
+        FROM tb_resource r
+        LEFT JOIN tb_resource_quota q ON r.id = q.resource_id
+        WHERE r.lab_id = #{labId}
+          AND r.status = 1
+    </select>
+</mapper>
