@@ -1,7 +1,7 @@
 package com.citen.service;
 
 import com.citen.dto.Result;
-import com.citen.entity.Voucher;
+import com.citen.entity.Resource;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -12,9 +12,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author 虎哥
  * @since 2021-12-22
  */
-public interface IVoucherService extends IService<Voucher> {
+public interface IVoucherService extends IService<Resource> {
 
-    Result queryVoucherOfShop(Long shopId);
+    Result queryVoucherOfShop(Long labId);
 
-    void addSeckillVoucher(Voucher voucher);
+    void addSeckillVoucher(Resource voucher);
 }

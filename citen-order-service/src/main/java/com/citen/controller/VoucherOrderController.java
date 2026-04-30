@@ -28,8 +28,8 @@ public class VoucherOrderController {
     private IVoucherOrderService voucherOrderService;
 
     @PostMapping("seckill/{id}")
-    public Result seckillVoucher(@PathVariable("id") Long voucherId) {
-        return voucherOrderService.seckillVoucher(voucherId);
+    public Result seckillVoucher(@PathVariable("id") Long resourceId) {
+        return voucherOrderService.seckillVoucher(resourceId);
     }
 
     @GetMapping("/admin/page")

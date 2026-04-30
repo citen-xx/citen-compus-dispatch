@@ -1,6 +1,6 @@
 package com.citen.service.impl;
 
-import com.citen.entity.SeckillVoucher;
+import com.citen.entity.ResourceQuota;
 import com.citen.mapper.SeckillVoucherMapper;
 import com.citen.service.ISeckillVoucherService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2022-01-04
  */
 @Service
-public class SeckillVoucherServiceImpl extends ServiceImpl<SeckillVoucherMapper, SeckillVoucher> implements ISeckillVoucherService {
+public class SeckillVoucherServiceImpl extends ServiceImpl<SeckillVoucherMapper, ResourceQuota> implements ISeckillVoucherService {
 
 }

@@ -1,6 +1,6 @@
 package com.citen.service;
 
-import com.citen.entity.SeckillVoucher;
+import com.citen.entity.ResourceQuota;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author 虎哥
  * @since 2022-01-04
  */
-public interface ISeckillVoucherService extends IService<SeckillVoucher> {
+public interface ISeckillVoucherService extends IService<ResourceQuota> {
 
 }

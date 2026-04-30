@@ -1,7 +1,7 @@
 package com.citen.service;
 
 import com.citen.dto.Result;
-import com.citen.entity.VoucherOrder;
+import com.citen.entity.Reservation;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -12,13 +12,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author 虎哥
  * @since 2021-12-22
  */
-public interface IVoucherOrderService extends IService<VoucherOrder> {
+public interface IVoucherOrderService extends IService<Reservation> {
 
-    Result seckillVoucher(Long voucherId);
+    Result seckillVoucher(Long resourceId);
 
     Result queryAdminOrderPage(Long current, Long size);
 
-    void createVoucherOrder(VoucherOrder voucherOrder);
+    void createVoucherOrder(Reservation voucherOrder);
 
 
     void cancelTimeoutOrder(Long orderId);

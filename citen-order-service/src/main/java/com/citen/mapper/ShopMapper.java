@@ -1,6 +1,6 @@
 package com.citen.mapper;
 
-import com.citen.entity.Shop;
+import com.citen.entity.Lab;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author 虎哥
  * @since 2021-12-22
  */
-public interface ShopMapper extends BaseMapper<Shop> {
+public interface ShopMapper extends BaseMapper<Lab> {
 
 }

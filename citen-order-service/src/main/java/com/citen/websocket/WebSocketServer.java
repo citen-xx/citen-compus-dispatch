@@ -1,6 +1,7 @@
 package com.citen.websocket;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
@@ -15,39 +16,40 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-@Slf4j
 @Component
-@ServerEndpoint("/ws/order/{shopId}")
+@ServerEndpoint("/ws/order/{labId}")
 public class WebSocketServer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(WebSocketServer.class);
 
     private static final ConcurrentHashMap<Long, CopyOnWriteArraySet<Session>> SHOP_SESSION_MAP = new ConcurrentHashMap<>();
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("shopId") Long shopId) {
-        SHOP_SESSION_MAP.computeIfAbsent(shopId, key -> new CopyOnWriteArraySet<>()).add(session);
-        log.info("websocket connected, shopId={}, sessionId={}", shopId, session.getId());
+    public void onOpen(Session session, @PathParam("labId") Long labId) {
+        SHOP_SESSION_MAP.computeIfAbsent(labId, key -> new CopyOnWriteArraySet<>()).add(session);
+        LOG.info("websocket connected, labId={}, sessionId={}", labId, session.getId());
     }
 
     @OnMessage
-    public void onMessage(String message, Session session, @PathParam("shopId") Long shopId) {
-        log.info("websocket message received, shopId={}, sessionId={}, message={}", shopId, session.getId(), message);
+    public void onMessage(String message, Session session, @PathParam("labId") Long labId) {
+        LOG.info("websocket message received, labId={}, sessionId={}, message={}", labId, session.getId(), message);
         sendText(session, "server received: " + message);
     }
 
     @OnClose
-    public void onClose(Session session, @PathParam("shopId") Long shopId) {
-        removeSession(shopId, session);
-        log.info("websocket closed, shopId={}, sessionId={}", shopId, session.getId());
+    public void onClose(Session session, @PathParam("labId") Long labId) {
+        removeSession(labId, session);
+        LOG.info("websocket closed, labId={}, sessionId={}", labId, session.getId());
     }
 
     @OnError
-    public void onError(Session session, Throwable error, @PathParam("shopId") Long shopId) {
-        removeSession(shopId, session);
-        log.error("websocket error, shopId={}, sessionId={}", shopId, session == null ? null : session.getId(), error);
+    public void onError(Session session, Throwable error, @PathParam("labId") Long labId) {
+        removeSession(labId, session);
+        LOG.error("websocket error, labId={}, sessionId={}", labId, session == null ? null : session.getId(), error);
     }
 
-    public static void sendToShop(Long shopId, String message) {
-        Set<Session> sessions = SHOP_SESSION_MAP.get(shopId);
+    public static void sendToShop(Long labId, String message) {
+        Set<Session> sessions = SHOP_SESSION_MAP.get(labId);
         if (sessions == null || sessions.isEmpty()) {
             return;
         }
@@ -63,21 +65,21 @@ public class WebSocketServer {
         try {
             session.getBasicRemote().sendText(message);
         } catch (IOException e) {
-            log.error("websocket push failed, sessionId={}, message={}", session.getId(), message, e);
+            LOG.error("websocket push failed, sessionId={}, message={}", session.getId(), message, e);
         }
     }
 
-    private static void removeSession(Long shopId, Session session) {
-        if (shopId == null || session == null) {
+    private static void removeSession(Long labId, Session session) {
+        if (labId == null || session == null) {
             return;
         }
-        CopyOnWriteArraySet<Session> sessions = SHOP_SESSION_MAP.get(shopId);
+        CopyOnWriteArraySet<Session> sessions = SHOP_SESSION_MAP.get(labId);
         if (sessions == null) {
             return;
         }
         sessions.remove(session);
         if (sessions.isEmpty()) {
-            SHOP_SESSION_MAP.remove(shopId);
+            SHOP_SESSION_MAP.remove(labId);
         }
     }
 }

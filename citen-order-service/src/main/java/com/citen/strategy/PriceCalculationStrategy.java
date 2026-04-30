@@ -1,6 +1,6 @@
 package com.citen.strategy;
 
-import com.citen.entity.Voucher;
+import com.citen.entity.Resource;
 
 /**
  * 价格计算策略抽象。
@@ -14,5 +14,5 @@ public interface PriceCalculationStrategy {
      * @param voucher 券信息
      * @return 最终支付金额
      */
-    Long calculatePrice(Voucher voucher);
+    Long calculatePrice(Resource voucher);
 }

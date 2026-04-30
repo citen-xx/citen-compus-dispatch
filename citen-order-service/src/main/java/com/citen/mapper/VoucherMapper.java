@@ -1,7 +1,7 @@
 package com.citen.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.citen.entity.Voucher;
+import com.citen.entity.Resource;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author 虎哥
  * @since 2021-12-22
  */
-public interface VoucherMapper extends BaseMapper<Voucher> {
+public interface VoucherMapper extends BaseMapper<Resource> {
 
-    List<Voucher> queryVoucherOfShop(@Param("shopId") Long shopId);
+    List<Resource> queryVoucherOfShop(@Param("labId") Long labId);
 }

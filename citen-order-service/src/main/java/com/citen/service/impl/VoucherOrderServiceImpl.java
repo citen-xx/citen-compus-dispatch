@@ -4,9 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.citen.config.RabbitMQConfig;
 import com.citen.dto.Result;
-import com.citen.entity.SeckillVoucher;
-import com.citen.entity.Voucher;
-import com.citen.entity.VoucherOrder;
+import com.citen.entity.Reservation;
+import com.citen.entity.Resource;
+import com.citen.entity.ResourceQuota;
 import com.citen.mapper.VoucherOrderMapper;
 import com.citen.service.DispatchService;
 import com.citen.service.ISeckillVoucherService;
@@ -18,9 +18,10 @@ import com.citen.utils.RedisConstants;
 import com.citen.utils.RedisIdWorker;
 import com.citen.utils.UserHolder;
 import com.citen.websocket.WebSocketServer;
-import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.core.io.ClassPathResource;
@@ -37,7 +38,6 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,9 +48,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Slf4j
 @Service
-public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, VoucherOrder> implements IVoucherOrderService {
+public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Reservation> implements IVoucherOrderService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(VoucherOrderServiceImpl.class);
 
     private static final int ORDER_STATUS_UNPAID = 1;
     private static final int ORDER_STATUS_CANCELED = 4;
@@ -63,31 +64,31 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         SECKILL_SCRIPT.setResultType(Long.class);
     }
 
-    @Resource
+    @javax.annotation.Resource
     private ISeckillVoucherService seckillVoucherService;
 
-    @Resource
+    @javax.annotation.Resource
     private IVoucherService voucherService;
 
-    @Resource
+    @javax.annotation.Resource
     private RedisIdWorker redisIdWorker;
 
-    @Resource
+    @javax.annotation.Resource
     private RedissonClient redissonClient;
 
-    @Resource
+    @javax.annotation.Resource
     private StringRedisTemplate stringRedisTemplate;
 
-    @Resource
+    @javax.annotation.Resource
     private PriceStrategyFactory priceStrategyFactory;
 
-    @Resource
+    @javax.annotation.Resource
     private RabbitTemplate rabbitTemplate;
 
-    @Resource
+    @javax.annotation.Resource
     private DispatchService dispatchService;
 
-    private final BlockingQueue<VoucherOrder> orderTasks = new ArrayBlockingQueue<>(1024 * 1024);
+    private final BlockingQueue<Reservation> orderTasks = new ArrayBlockingQueue<>(1024 * 1024);
     private static final ExecutorService SECKILL_ORDER_EXECUTOR = Executors.newSingleThreadExecutor();
     private final String queueName = "stream.orders";
 
@@ -101,21 +102,20 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 
     private void initStockToRedis() {
         try {
-            List<SeckillVoucher> vouchers = seckillVoucherService.list();
-            for (SeckillVoucher voucher : vouchers) {
-                String stockKey = RedisConstants.SECKILL_STOCK_KEY + voucher.getVoucherId();
-                if (stringRedisTemplate.opsForValue().get(stockKey) == null) {
-                    stringRedisTemplate.opsForValue().set(stockKey, voucher.getStock().toString());
-                    log.info("init stock to redis, voucherId={}, stock={}", voucher.getVoucherId(), voucher.getStock());
+            List<ResourceQuota> quotas = seckillVoucherService.list();
+            for (ResourceQuota quota : quotas) {
+                String quotaKey = RedisConstants.SECKILL_STOCK_KEY + quota.getResourceId();
+                if (stringRedisTemplate.opsForValue().get(quotaKey) == null) {
+                    stringRedisTemplate.opsForValue().set(quotaKey, quota.getQuota().toString());
+                    LOG.info("init quota to redis, resourceId={}, quota={}", quota.getResourceId(), quota.getQuota());
                 }
             }
         } catch (Exception e) {
-            log.error("init stock to redis failed", e);
+            LOG.error("init quota to redis failed", e);
         }
     }
 
     private class VoucherOrderHandle implements Runnable {
-
         @Override
         public void run() {
             while (true) {
@@ -130,13 +130,13 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                     }
 
                     MapRecord<String, Object, Object> values = list.get(0);
-                    Map<Object, Object> valuesValue = values.getValue();
-                    VoucherOrder voucherOrder = BeanUtil.fillBeanWithMap(valuesValue, new VoucherOrder(), true);
+                    Map<Object, Object> valueMap = values.getValue();
+                    Reservation reservation = BeanUtil.fillBeanWithMap(valueMap, new Reservation(), true);
 
-                    handleVoucherOrder(voucherOrder);
+                    handleVoucherOrder(reservation);
                     stringRedisTemplate.opsForStream().acknowledge(queueName, "g1", values.getId());
                 } catch (Exception e) {
-                    log.error("handle stream order failed", e);
+                    LOG.error("handle stream order failed", e);
                     handlePendingList();
                 }
             }
@@ -156,56 +156,56 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                 }
 
                 MapRecord<String, Object, Object> values = list.get(0);
-                Map<Object, Object> valuesValue = values.getValue();
-                VoucherOrder voucherOrder = BeanUtil.fillBeanWithMap(valuesValue, new VoucherOrder(), true);
+                Map<Object, Object> valueMap = values.getValue();
+                Reservation reservation = BeanUtil.fillBeanWithMap(valueMap, new Reservation(), true);
 
-                handleVoucherOrder(voucherOrder);
+                handleVoucherOrder(reservation);
                 stringRedisTemplate.opsForStream().acknowledge(queueName, "g1", values.getId());
             } catch (Exception e) {
-                log.error("handle pending-list order failed", e);
+                LOG.error("handle pending-list order failed", e);
             }
         }
     }
 
-    private void handleVoucherOrder(VoucherOrder voucherOrder) {
-        Long userId = voucherOrder.getUserId();
+    private void handleVoucherOrder(Reservation reservation) {
+        Long userId = reservation.getUserId();
         RLock redisLock = redissonClient.getLock("lock:order:" + userId);
         boolean isLock = redisLock.tryLock();
         if (!isLock) {
-            log.error("duplicate order rejected, userId={}", userId);
+            LOG.error("duplicate reservation rejected, userId={}", userId);
             return;
         }
 
         try {
-            proxy.createVoucherOrder(voucherOrder);
+            proxy.createVoucherOrder(reservation);
         } finally {
             redisLock.unlock();
         }
     }
 
     @Override
-    public Result seckillVoucher(Long voucherId) {
+    public Result seckillVoucher(Long resourceId) {
         Long userId = UserHolder.getUser().getId();
-        long orderId = redisIdWorker.nextId("order");
+        long orderId = redisIdWorker.nextId("reservation");
 
         Long result = stringRedisTemplate.execute(
                 SECKILL_SCRIPT,
                 Collections.emptyList(),
-                voucherId.toString(),
+                resourceId.toString(),
                 userId.toString(),
                 String.valueOf(orderId)
         );
 
-        int r = result.intValue();
+        int r = result == null ? -1 : result.intValue();
         if (r != 0) {
-            return Result.fail(r == 1 ? "库存不足" : "无法下单");
+            return Result.fail(r == 1 ? "资源额度已满" : "资源超额分配");
         }
 
-        VoucherOrder voucherOrder = new VoucherOrder();
-        voucherOrder.setId(orderId);
-        voucherOrder.setUserId(userId);
-        voucherOrder.setVoucherId(voucherId);
-        orderTasks.add(voucherOrder);
+        Reservation reservation = new Reservation();
+        reservation.setId(orderId);
+        reservation.setUserId(userId);
+        reservation.setResourceId(resourceId);
+        orderTasks.add(reservation);
 
         proxy = (IVoucherOrderService) AopContext.currentProxy();
         return Result.ok(orderId);
@@ -217,7 +217,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         long validSize = size == null || size < 1 ? 10L : size;
         long offset = (validCurrent - 1) * validSize;
 
-        List<VoucherOrder> records = baseMapper.selectAdminPageByDeferredJoin(offset, validSize);
+        List<Reservation> records = baseMapper.selectAdminPageByDeferredJoin(offset, validSize);
         long total = count();
 
         Map<String, Object> pageResult = new HashMap<>(4);
@@ -230,49 +230,52 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 
     @Override
     @Transactional
-    public void createVoucherOrder(VoucherOrder voucherOrder) {
-        Long userId = voucherOrder.getUserId();
+    public void createVoucherOrder(Reservation reservation) {
+        Long userId = reservation.getUserId();
 
-        int count = query().eq("user_id", userId).eq("voucher_id", voucherOrder.getVoucherId()).count();
+        int count = query()
+                .eq("user_id", userId)
+                .eq("resource_id", reservation.getResourceId())
+                .count();
         if (count > 0) {
-            log.error("user already ordered, userId={}, voucherId={}", userId, voucherOrder.getVoucherId());
+            LOG.error("user already reserved, userId={}, resourceId={}", userId, reservation.getResourceId());
             return;
         }
 
-        Voucher voucher = voucherService.getById(voucherOrder.getVoucherId());
-        if (voucher == null) {
-            log.error("voucher not found, voucherId={}", voucherOrder.getVoucherId());
+        Resource resource = voucherService.getById(reservation.getResourceId());
+        if (resource == null) {
+            LOG.error("resource not found, resourceId={}", reservation.getResourceId());
             return;
         }
 
-        Long finalPayAmount = calculateFinalPayAmount(voucher);
-        voucherOrder.setFinalPayAmount(finalPayAmount);
-        voucherOrder.setStatus(ORDER_STATUS_UNPAID);
+        Long allocatedQuota = calculateAllocatedQuota(resource);
+        reservation.setAllocatedQuota(allocatedQuota);
+        reservation.setStatus(ORDER_STATUS_UNPAID);
 
         boolean success = seckillVoucherService.update()
-                .setSql("stock=stock-1")
-                .eq("voucher_id", voucherOrder.getVoucherId())
-                .gt("stock", 0)
+                .setSql("quota=quota-1")
+                .eq("resource_id", reservation.getResourceId())
+                .gt("quota", 0)
                 .update();
         if (!success) {
-            log.error("stock not enough, voucherId={}", voucherOrder.getVoucherId());
+            LOG.error("resource quota exhausted, resourceId={}", reservation.getResourceId());
             return;
         }
 
-        save(voucherOrder);
-        registerAfterCommitActions(voucherOrder.getId(), voucher.getShopId());
+        save(reservation);
+        registerAfterCommitActions(reservation.getId(), resource.getLabId());
     }
 
     @Override
     @Transactional
     public void cancelTimeoutOrder(Long orderId) {
-        VoucherOrder voucherOrder = getById(orderId);
-        if (voucherOrder == null) {
-            log.warn("timeout order not found, orderId={}", orderId);
+        Reservation reservation = getById(orderId);
+        if (reservation == null) {
+            LOG.warn("timeout reservation not found, orderId={}", orderId);
             return;
         }
-        if (!Integer.valueOf(ORDER_STATUS_UNPAID).equals(voucherOrder.getStatus())) {
-            log.info("timeout order ignored, orderId={}, status={}", orderId, voucherOrder.getStatus());
+        if (!Integer.valueOf(ORDER_STATUS_UNPAID).equals(reservation.getStatus())) {
+            LOG.info("timeout reservation ignored, orderId={}, status={}", orderId, reservation.getStatus());
             return;
         }
 
@@ -282,58 +285,49 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                 .eq("status", ORDER_STATUS_UNPAID)
                 .update();
         if (!canceled) {
-            log.info("timeout order cancel skipped by concurrent update, orderId={}", orderId);
+            LOG.info("timeout reservation cancel skipped by concurrent update, orderId={}", orderId);
             return;
         }
 
         boolean restored = seckillVoucherService.update()
-                .setSql("stock=stock+1")
-                .eq("voucher_id", voucherOrder.getVoucherId())
+                .setSql("quota=quota+1")
+                .eq("resource_id", reservation.getResourceId())
                 .update();
         if (!restored) {
-            log.warn("db stock restore failed, orderId={}, voucherId={}", orderId, voucherOrder.getVoucherId());
+            LOG.warn("db quota restore failed, orderId={}, resourceId={}", orderId, reservation.getResourceId());
         }
 
-        stringRedisTemplate.opsForValue().increment(RedisConstants.SECKILL_STOCK_KEY + voucherOrder.getVoucherId());
+        stringRedisTemplate.opsForValue().increment(RedisConstants.SECKILL_STOCK_KEY + reservation.getResourceId());
 
-        Voucher voucher = voucherService.getById(voucherOrder.getVoucherId());
-        Long shopId = voucher == null ? null : voucher.getShopId();
-        registerAfterCommit(new Runnable() {
-            @Override
-            public void run() {
-                pushOrderStatusChange(shopId, orderId, "已取消");
-            }
+        Resource resource = voucherService.getById(reservation.getResourceId());
+        Long labId = resource == null ? null : resource.getLabId();
+        registerAfterCommit(() -> pushReservationStatusChange(labId, orderId, "已取消"));
+    }
+
+    private Long calculateAllocatedQuota(Resource resource) {
+        Integer strategyType = resolvePriceStrategyType(resource);
+        return priceStrategyFactory.getStrategy(strategyType).calculatePrice(resource);
+    }
+
+    private void registerAfterCommitActions(final Long orderId, final Long labId) {
+        registerAfterCommit(() -> {
+            rabbitTemplate.convertAndSend(
+                    RabbitMQConfig.ORDER_EVENT_EXCHANGE,
+                    RabbitMQConfig.ORDER_DELAY_ROUTING_KEY,
+                    String.valueOf(orderId)
+            );
+            pushReservationStatusChange(labId, orderId, "待确认");
+            dispatchService.dispatchOrder(orderId, labId);
         });
     }
 
-    private Long calculateFinalPayAmount(Voucher voucher) {
-        Integer strategyType = resolvePriceStrategyType(voucher);
-        return priceStrategyFactory.getStrategy(strategyType).calculatePrice(voucher);
-    }
-
-    private void registerAfterCommitActions(final Long orderId, final Long shopId) {
-        registerAfterCommit(new Runnable() {
-            @Override
-            public void run() {
-                rabbitTemplate.convertAndSend(
-                        RabbitMQConfig.ORDER_EVENT_EXCHANGE,
-                        RabbitMQConfig.ORDER_DELAY_ROUTING_KEY,
-                        String.valueOf(orderId)
-                );
-                pushOrderStatusChange(shopId, orderId, "待支付");
-                dispatchService.dispatchOrder(orderId, shopId);
-            }
-        });
-    }
-
-    private void pushOrderStatusChange(Long shopId, Long orderId, String statusText) {
-        if (shopId == null) {
+    private void pushReservationStatusChange(Long labId, Long orderId, String statusText) {
+        if (labId == null) {
             return;
         }
-        WebSocketServer.sendToShop(shopId, "订单状态已变更：" + statusText + "，订单ID=" + orderId);
+        WebSocketServer.sendToShop(labId, "预约状态已变更：" + statusText + "，预约ID=" + orderId);
     }
 
-    // 所有外部副作用都在事务提交后执行，避免订单回滚后仍然通知前端或触发派单。
     private void registerAfterCommit(final Runnable action) {
         if (TransactionSynchronizationManager.isSynchronizationActive()) {
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
@@ -342,7 +336,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                     try {
                         action.run();
                     } catch (Exception e) {
-                        log.error("after-commit action failed", e);
+                        LOG.error("after-commit action failed", e);
                     }
                 }
             });
@@ -352,18 +346,18 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         action.run();
     }
 
-    private Integer resolvePriceStrategyType(Voucher voucher) {
-        Integer voucherType = voucher.getType();
-        if (voucherType == null) {
+    private Integer resolvePriceStrategyType(Resource resource) {
+        Integer resourceMode = resource.getResourceMode();
+        if (resourceMode == null) {
             return PriceStrategyType.NORMAL;
         }
-        if (voucherType == 0) {
+        if (resourceMode == 0) {
             return PriceStrategyType.NORMAL;
         }
-        if (voucherType == 1) {
+        if (resourceMode == 1) {
             return PriceStrategyType.DISCOUNT;
         }
-        if (voucherType == 2) {
+        if (resourceMode == 2) {
             return PriceStrategyType.FULL_REDUCTION;
         }
         return PriceStrategyType.NORMAL;

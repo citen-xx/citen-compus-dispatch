@@ -1,6 +1,6 @@
 package com.citen.strategy;
 
-import com.citen.entity.Voucher;
+import com.citen.entity.Resource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class NormalPriceStrategy implements PriceCalculationStrategy {
 
     @Override
-    public Long calculatePrice(Voucher voucher) {
-        return voucher.getPayValue() == null ? 0L : voucher.getPayValue();
+    public Long calculatePrice(Resource voucher) {
+        return voucher.getReserveValue() == null ? 0L : voucher.getReserveValue();
     }
 }

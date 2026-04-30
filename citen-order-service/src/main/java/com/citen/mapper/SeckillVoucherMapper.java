@@ -1,6 +1,6 @@
 package com.citen.mapper;
 
-import com.citen.entity.SeckillVoucher;
+import com.citen.entity.ResourceQuota;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author 虎哥
  * @since 2022-01-04
  */
-public interface SeckillVoucherMapper extends BaseMapper<SeckillVoucher> {
+public interface SeckillVoucherMapper extends BaseMapper<ResourceQuota> {
 
 }
