@@ -12,8 +12,8 @@ import com.citen.service.DispatchService;
 import com.citen.service.IReservationService;
 import com.citen.service.IResourceQuotaService;
 import com.citen.service.IResourceService;
-import com.citen.strategy.PriceStrategyFactory;
-import com.citen.strategy.PriceStrategyType;
+import com.citen.strategy.ResourceAllocationStrategyFactory;
+import com.citen.strategy.ResourceAllocationStrategyType;
 import com.citen.utils.RedisConstants;
 import com.citen.utils.RedisIdWorker;
 import com.citen.utils.UserHolder;
@@ -80,7 +80,7 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
     private StringRedisTemplate stringRedisTemplate;
 
     @javax.annotation.Resource
-    private PriceStrategyFactory priceStrategyFactory;
+    private ResourceAllocationStrategyFactory resourceAllocationStrategyFactory;
 
     @javax.annotation.Resource
     private RabbitTemplate rabbitTemplate;
@@ -311,8 +311,8 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
     }
 
     private Long calculateAllocatedQuota(Resource resource) {
-        Integer strategyType = resolvePriceStrategyType(resource);
-        return priceStrategyFactory.getStrategy(strategyType).calculatePrice(resource);
+        Integer strategyType = resolveAllocationStrategyType(resource);
+        return resourceAllocationStrategyFactory.getStrategy(strategyType).calculateRequiredQuota(resource);
     }
 
     private void registerAfterCommitActions(final Reservation reservation, final Long labId) {
@@ -351,20 +351,14 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
         action.run();
     }
 
-    private Integer resolvePriceStrategyType(Resource resource) {
+    private Integer resolveAllocationStrategyType(Resource resource) {
         Integer resourceMode = resource.getResourceMode();
         if (resourceMode == null) {
-            return PriceStrategyType.NORMAL;
+            return ResourceAllocationStrategyType.COMPUTE_POINT;
         }
         if (resourceMode == 0) {
-            return PriceStrategyType.NORMAL;
+            return ResourceAllocationStrategyType.COMPUTE_POINT;
         }
-        if (resourceMode == 1) {
-            return PriceStrategyType.DISCOUNT;
-        }
-        if (resourceMode == 2) {
-            return PriceStrategyType.FULL_REDUCTION;
-        }
-        return PriceStrategyType.NORMAL;
+        return ResourceAllocationStrategyType.COMPUTE_POINT;
     }
 }

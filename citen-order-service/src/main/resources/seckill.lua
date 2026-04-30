@@ -1,34 +1,35 @@
--- 1. 参数列表
--- 1.1. 资源 id
+-- 参数列表
+-- 资源ID
 local resourceId = ARGV[1]
--- 1.2. 用户 id
+-- 用户ID
 local userId = ARGV[2]
--- 1.3. 预约记录 id
+-- 预约记录ID
 local reservationId = ARGV[3]
 
--- 2. 数据 key
--- 2.1. 资源额度 key
+-- Redis Key
+-- 资源额度Key
 local quotaKey = 'resource:quota:' .. resourceId
--- 2.2. 资源预约记录 key
+-- 预约资格Key
 local reservationKey = 'resource:reservation:' .. resourceId
 
--- 3. 脚本业务
--- 3.1. 判断算力/座位额度是否充足
+-- 算力/座位额度校验
 local quota = redis.call('get', quotaKey)
 if (quota == false or tonumber(quota) == nil or tonumber(quota) <= 0) then
     return 1
 end
 
--- 3.2. 判断用户是否已经抢占过该资源
+-- 判断用户是否已经预约过该资源
 if (redis.call('sismember', reservationKey, userId) == 1) then
     return 2
 end
 
--- 3.3. 扣减额度
+-- 扣减资源额度
 redis.call('incrby', quotaKey, -1)
--- 3.4. 记录抢占资格
+
+-- 记录预约资格
 redis.call('sadd', reservationKey, userId)
--- 3.5. 发送异步消息，后续创建预约记录
+
+-- 写入预约消息流
 redis.call(
     'xadd',
     'stream.reservations',
