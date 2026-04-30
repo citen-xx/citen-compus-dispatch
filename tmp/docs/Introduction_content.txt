@@ -1,4 +1,4 @@
-TITLE|项目二：校园稀缺资源（智算中心 / 实训室）高可用调度中台
+TITLE|校园智算中心预约与资源调度系统
 SUBTITLE|简历项目介绍 / 面试答辩材料 / GitHub 展示说明
 NOTE|说明：以下内容用于简历与面试展示，重点突出微服务重构、高并发抢占、一致性控制与柔性事务闭环。
 H1|1. 项目定位
@@ -66,7 +66,7 @@ P|GET /resource/list/{labId}：查询某中心下的资源列表。
 P|POST /resource：新增资源。
 P|POST /resource/quota：新增资源额度。
 H1|11. 简历可直接使用的项目描述
-P|项目名称：校园稀缺资源（智算中心 / 实训室）高可用调度中台。
+P|项目名称：校园智算中心预约与资源调度系统。
 P|技术栈：Spring Cloud Alibaba（Nacos / Gateway / Sentinel）、Spring Boot、Redis、RabbitMQ、Redisson、Lua、MyBatis-Plus、MySQL。
 P|项目描述：作为校园智能问答助手的底层业务执行引擎，负责承接大模型 Function Calling 下发的资源预约与抢占指令，围绕智算中心 GPU 节点、实训室工位等稀缺资源，解决高并发下的额度控制、状态一致性、超时释放与柔性事务闭环问题。
 P|职责描述示例 1：负责将单体系统重构为 Spring Cloud Alibaba 微服务架构，拆分网关、用户凭证、资源调度等独立服务。

@@ -15,8 +15,8 @@
     <artifactId>citen-dp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>citen-dp</name>
-    <description>citen-dp parent project</description>
+    <name>校园智算中心预约与资源调度系统</name>
+    <description>校园智算中心预约与资源调度系统 parent project</description>
 
     <modules>
         <module>citen-common</module>
