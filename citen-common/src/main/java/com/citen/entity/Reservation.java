@@ -44,7 +44,12 @@ public class Reservation implements Serializable {
     private Integer reserveType;
 
     /**
-     * 预约状态
+     * 预约状态：
+     * 1-待确认
+     * 2-已确认
+     * 3-已完成
+     * 4-已取消
+     * 5-超时违约
      */
     private Integer status;
 
@@ -54,17 +59,17 @@ public class Reservation implements Serializable {
     private LocalDateTime createTime;
 
     /**
-     * 签到确认时间
+     * 确认时间
      */
     private LocalDateTime confirmTime;
 
     /**
-     * 预约完成时间
+     * 完成时间
      */
     private LocalDateTime completeTime;
 
     /**
-     * 预约取消时间
+     * 取消时间
      */
     private LocalDateTime cancelTime;
 

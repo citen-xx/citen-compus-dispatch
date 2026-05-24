@@ -23,6 +23,16 @@ public class ReservationController {
         return reservationService.reserveResource(resourceId);
     }
 
+    @PostMapping("/confirm/{id}")
+    public Result confirmReservation(@PathVariable("id") Long reservationId) {
+        return reservationService.confirmReservation(reservationId);
+    }
+
+    @PostMapping("/cancel/{id}")
+    public Result cancelReservation(@PathVariable("id") Long reservationId) {
+        return reservationService.cancelReservation(reservationId);
+    }
+
     @GetMapping("/admin/page")
     public Result queryAdminReservationPage(
             @RequestParam(value = "current", defaultValue = "1") Long current,

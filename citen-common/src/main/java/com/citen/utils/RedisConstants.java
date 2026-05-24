@@ -16,6 +16,8 @@ public class RedisConstants {
     public static final Long LOCK_LAB_TTL = 10L;
 
     public static final String RESOURCE_QUOTA_KEY = "resource:quota:";
+    public static final String RESOURCE_RESERVATION_KEY = "resource:reservation:";
+    public static final String RESERVATION_STREAM_KEY = "stream.reservations";
     public static final String LAB_GEO_KEY = "lab:geo:";
     public static final String DELIVERY_RIDER_GEO_KEY = "delivery:rider:geo";
     public static final String USER_SIGN_KEY = "sign:";
