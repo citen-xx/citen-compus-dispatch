@@ -9,8 +9,26 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.mock;
 
 class ReservationCapacityTest {
+
+    @Test
+    void duplicateStreamMessageWithSameReservationIdIsIdempotent() {
+        ReservationServiceImpl service = spy(new ReservationServiceImpl());
+        com.citen.mapper.ReservationMapper mapper = mock(com.citen.mapper.ReservationMapper.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "baseMapper", mapper);
+        Reservation existing = reservation(7L, "09:00", "10:00");
+        existing.setId(100L);
+        doReturn(existing).when(service).getById(100L);
+
+        service.createReservation(existing);
+
+        verifyNoInteractions(mapper);
+    }
 
     @Test
     void multipleUsersCannotExceedFiniteCapacity() {

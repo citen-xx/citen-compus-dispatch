@@ -62,13 +62,14 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 @Service
 public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reservation> implements IReservationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReservationServiceImpl.class);
     private static final String STREAM_CONSUMER_GROUP = "g1";
-    private static final String STREAM_CONSUMER_NAME = "c1";
+    private static final String STREAM_CONSUMER_NAME = "c-" + UUID.randomUUID();
     private static final long PENDING_LIST_RETRY_DELAY_MILLIS = 500L;
     private static final int PENDING_LIST_MAX_RETRY_COUNT = 3;
     private static final String REDIS_RELEASE_COMPENSATION = "REDIS_SLOT_RELEASE";
@@ -213,12 +214,33 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
     }
 
     void processReservationRecord(MapRecord<String, Object, Object> record) {
-        Reservation reservation = mapReservation(record.getValue());
+        Reservation reservation;
+        try {
+            reservation = mapReservation(record.getValue());
+        } catch (RuntimeException e) {
+            long retryCount = incrementRetryCount(record);
+            if (retryCount < PENDING_LIST_MAX_RETRY_COUNT) {
+                throw e;
+            }
+            moveToFailedStream(record, e, retryCount);
+            acknowledgeRecord(record);
+            stringRedisTemplate.opsForHash().delete(
+                    RedisConstants.RESERVATION_RETRY_KEY, record.getId().getValue());
+            LOG.error("invalid reservation stream message moved to failed stream, recordId={}, retryCount={}",
+                    record.getId().getValue(), retryCount, e);
+            return;
+        }
         try {
             handleReservation(reservation);
         } catch (ReservationLockException e) {
             LOG.info("reservation lock busy, keep message pending, reservationId={}", reservation.getId());
             throw e;
+        } catch (ReservationAlreadyCompensatedException e) {
+            moveToFailedStream(record, e, PENDING_LIST_MAX_RETRY_COUNT);
+            acknowledgeRecord(record);
+            stringRedisTemplate.opsForHash().delete(
+                    RedisConstants.RESERVATION_RETRY_KEY, record.getId().getValue());
+            return;
         } catch (RuntimeException e) {
             long retryCount = incrementRetryCount(record);
             if (retryCount < PENDING_LIST_MAX_RETRY_COUNT) {
@@ -248,6 +270,11 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
 
     void handleReservation(Reservation reservation) {
         Long userId = reservation.getUserId();
+        Object redisState = stringRedisTemplate.opsForHash().get(
+                RedisConstants.RESERVATION_META_KEY + reservation.getId(), "state");
+        if ("COMPENSATED".equals(String.valueOf(redisState))) {
+            throw new ReservationAlreadyCompensatedException();
+        }
         RLock redisLock = redissonClient.getLock("lock:reservation:resource:" + reservation.getResourceId());
         boolean locked = redisLock.tryLock();
         if (!locked) {
@@ -333,6 +360,11 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
                     ),
                     reservation.getId().toString()
             );
+            if (releaseResult != null && releaseResult == -2) {
+                LOG.warn("{} redis metadata already missing, treat as idempotent release, reservationId={}",
+                        reason, reservation.getId());
+                return true;
+            }
             if (releaseResult == null || releaseResult < 0) {
                 LOG.error("{} redis release rejected, reservationId={}, result={}",
                         reason, reservation.getId(), releaseResult);
@@ -502,6 +534,11 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
         if (!reservationStateTransitionService.canTransit(reservation.getStatus(), ReservationStatusEvent.COMPLETE)) {
             return Result.fail("当前预约状态不允许完成");
         }
+        LocalDateTime reservationEnd = LocalDateTime.of(
+                reservation.getReservationDate(), reservation.getEndTime());
+        if (LocalDateTime.now().isBefore(reservationEnd)) {
+            return Result.fail("预约结束后才能标记完成");
+        }
         if (!reservationStateTransitionService.transitionReservationStatus(
                 reservationId, currentUserId, ReservationStatusEvent.COMPLETE)) {
             return Result.fail("预约状态已变更，请刷新后重试");
@@ -544,6 +581,9 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
             ResourceQuota quota = resourceQuotaService.getById(resourceId);
             LocalDateTime startDateTime = LocalDateTime.of(reservation.getReservationDate(), reservation.getStartTime());
             LocalDateTime endDateTime = LocalDateTime.of(reservation.getReservationDate(), reservation.getEndTime());
+            if (!startDateTime.isAfter(LocalDateTime.now())) {
+                throw new IllegalStateException("reservation start time has passed before persistence");
+            }
             if (quota == null || (quota.getBeginTime() != null && startDateTime.isBefore(quota.getBeginTime()))
                     || (quota.getEndTime() != null && endDateTime.isAfter(quota.getEndTime()))) {
                 throw new IllegalStateException("reservation outside resource availability window");
@@ -561,7 +601,9 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
             }
 
             reservation.setStatus(ReservationStatus.PENDING.getCode());
-            reservation.setExpireAt(LocalDateTime.now().plusSeconds(confirmTimeoutSeconds));
+            LocalDateTime confirmationDeadline = LocalDateTime.now().plusSeconds(confirmTimeoutSeconds);
+            reservation.setExpireAt(confirmationDeadline.isBefore(startDateTime)
+                    ? confirmationDeadline : startDateTime);
             reservation.setTimeoutMessageSent(false);
 
             boolean saved = save(reservation);
@@ -642,7 +684,7 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
             rabbitTemplate.convertAndSend(
                     RabbitMQConfig.RESERVATION_EVENT_EXCHANGE,
                     RabbitMQConfig.RESERVATION_DELAY_ROUTING_KEY,
-                    reservation,
+                    reservation.getId().toString(),
                     message -> {
                         message.getMessageProperties().setExpiration(String.valueOf(delayMillis));
                         return message;
@@ -880,6 +922,14 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
 
     static final class ReservationLockException extends RuntimeException {
         private static final long serialVersionUID = 1L;
+    }
+
+    static final class ReservationAlreadyCompensatedException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        ReservationAlreadyCompensatedException() {
+            super("reservation Redis pre-deduction was already compensated");
+        }
     }
 
 }

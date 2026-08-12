@@ -1,7 +1,6 @@
 package com.citen.listener;
 
 import com.citen.config.RabbitMQConfig;
-import com.citen.entity.Reservation;
 import com.citen.service.IReservationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +18,16 @@ public class ReservationTimeoutListener {
     private IReservationService reservationService;
 
     @RabbitListener(queues = RabbitMQConfig.RESERVATION_TIMEOUT_QUEUE)
-    public void listenReservationTimeoutMessage(Reservation reservation) {
-        if (reservation == null || reservation.getId() == null) {
-            LOG.error("invalid timeout reservation message, payload={}", reservation);
+    public void listenReservationTimeoutMessage(String reservationIdText) {
+        if (reservationIdText == null) {
+            LOG.error("invalid timeout reservation message, payload is null");
             return;
         }
-
-        reservationService.expireReservation(reservation.getId());
+        try {
+            reservationService.expireReservation(Long.valueOf(reservationIdText));
+        } catch (NumberFormatException e) {
+            LOG.error("invalid timeout reservation ID, payload={}", reservationIdText);
+            throw e;
+        }
     }
 }

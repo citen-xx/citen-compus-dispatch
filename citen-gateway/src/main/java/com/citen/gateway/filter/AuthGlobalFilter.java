@@ -54,17 +54,21 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
             return exchange.getResponse().setComplete();
         }
 
-        stringRedisTemplate.expire(tokenKey, RedisConstants.LOGIN_USER_TTL, TimeUnit.MINUTES);
+        stringRedisTemplate.expire(tokenKey, RedisConstants.LOGIN_USER_TTL, TimeUnit.SECONDS);
 
         ServerHttpRequest.Builder requestBuilder = exchange.getRequest().mutate();
         Object userId = userMap.get("id");
-        if (userId != null) {
-            requestBuilder.header("x-user-id", userId.toString());
-        }
         Object nickName = userMap.get("nickName");
-        if (nickName != null) {
-            requestBuilder.header("x-user-nick-name", nickName.toString());
-        }
+        requestBuilder.headers(headers -> {
+            headers.remove("x-user-id");
+            headers.remove("x-user-nick-name");
+            if (userId != null) {
+                headers.set("x-user-id", userId.toString());
+            }
+            if (nickName != null) {
+                headers.set("x-user-nick-name", nickName.toString());
+            }
+        });
 
         return chain.filter(exchange.mutate().request(requestBuilder.build()).build());
     }

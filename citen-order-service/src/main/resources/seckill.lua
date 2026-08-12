@@ -36,7 +36,11 @@ for minute = startMinute, endMinute - 1 do
     if redis.call('getbit', userSlotsKey, minute) == 1 then
         return 3
     end
-    local occupied = tonumber(redis.call('hget', slotsKey, tostring(minute))) or 0
+    local occupiedValue = redis.call('hget', slotsKey, tostring(minute))
+    if occupiedValue ~= false and tonumber(occupiedValue) == nil then
+        return 5
+    end
+    local occupied = tonumber(occupiedValue) or 0
     if occupied >= quota then
         return 2
     end
@@ -67,12 +71,27 @@ if ttlSeconds > 0 then
     redis.call('expire', metaKey, ttlSeconds)
 end
 
-redis.call('xadd', streamKey, 'MAXLEN', '~', 10000, '*',
+local streamResult = redis.pcall('xadd', streamKey, 'MAXLEN', '~', 10000, '*',
     'userId', userId,
     'resourceId', resourceId,
     'id', reservationId,
     'reservationDate', reservationDate,
     'startTime', ARGV[8],
     'endTime', ARGV[9])
+
+if type(streamResult) == 'table' and streamResult.err then
+    for minute = startMinute, endMinute - 1 do
+        local field = tostring(minute)
+        local occupied = tonumber(redis.call('hget', slotsKey, field)) or 0
+        if occupied > 1 then
+            redis.call('hincrby', slotsKey, field, -1)
+        else
+            redis.call('hdel', slotsKey, field)
+        end
+        redis.call('setbit', userSlotsKey, minute, 0)
+    end
+    redis.call('del', metaKey)
+    return 5
+end
 
 return 0

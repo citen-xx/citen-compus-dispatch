@@ -18,6 +18,8 @@ class ReservationLuaContractTest {
         assertTrue(script.contains("occupied >= quota"));
         assertTrue(script.contains("hincrby', slotsKey"));
         assertTrue(script.contains("xadd', streamKey"));
+        assertTrue(script.contains("redis.pcall('xadd'"));
+        assertTrue(script.contains("return 5"));
         assertFalse(script.contains("redis.call('decr', quotaKey)"));
     }
 

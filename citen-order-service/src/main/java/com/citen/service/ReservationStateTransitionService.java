@@ -80,7 +80,7 @@ public class ReservationStateTransitionService {
         LambdaUpdateWrapper<Reservation> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Reservation::getId, reservationId)
                 .eq(Reservation::getStatus, currentStatus);
-        if (event == ReservationStatusEvent.CONFIRM) {
+        if (event == ReservationStatusEvent.CONFIRM || event == ReservationStatusEvent.CANCEL) {
             updateWrapper.gt(Reservation::getExpireAt, now);
         } else if (event == ReservationStatusEvent.EXPIRE) {
             updateWrapper.le(Reservation::getExpireAt, now);

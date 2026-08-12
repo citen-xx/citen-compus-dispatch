@@ -28,5 +28,5 @@ for minute = startMinute, endMinute - 1 do
     redis.call('setbit', KEYS[2], minute, 0)
 end
 redis.call('hset', KEYS[3], 'state', 'COMPENSATED', 'compensatedReservationId', ARGV[1])
-redis.call('expire', KEYS[3], 86400)
+redis.call('expire', KEYS[3], 604800)
 return 1

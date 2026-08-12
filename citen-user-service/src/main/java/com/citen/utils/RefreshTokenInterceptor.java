@@ -43,7 +43,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
 //        不存在拦截，存在保存用户信息到ThreadLocal
         UserHolder.saveUser(userDTO);
 //        放心
-        stringRedisTemplate.expire(key,RedisConstants.LOGIN_USER_TTL, TimeUnit.MINUTES);
+        stringRedisTemplate.expire(key,RedisConstants.LOGIN_USER_TTL, TimeUnit.SECONDS);
 
 
         return true;

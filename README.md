@@ -1,260 +1,132 @@
-# 校园智算中心预约与资源调度系统
+# 实验室资源预约与库存同步平台
 
-## 项目简介
+这是一个面向实验室工位、设备和计算节点的 Java 后端练习项目。用户可以按日期和时间段预约资源，在规定时间内确认；未确认的预约会自动过期并释放占用。
 
-这是一个基于 **Spring Cloud Alibaba** 重构的校园稀缺资源调度中台，面向高校场景中的：
+项目重点是把一次预约从 Redis 原子校验、Redis Stream 异步落库、RabbitMQ 超时取消到 WebSocket 状态通知串成完整链路。它是学生项目，不宣称生产级高可用、分布式事务或未经验证的性能指标。
 
-- 智算中心 GPU 算力节点
-- 实训室座位 / 机器工位
-- 深度学习工作站
-- 高价值实验资源时段名额
+## 模块
 
-项目核心职责不是做问答，而是作为上层“校园智能问答助手”的**底层业务执行引擎**，无缝承接大模型 Function Calling 下发的资源预约 / 抢占 / 释放指令，在突发流量下保证：
+```text
+citen-common         公共实体、DTO、状态枚举、Redis 常量
+citen-gateway        统一路由、Token 校验、用户身份透传、WebSocket 路由
+citen-user-service   验证码登录、Token 登录态、用户签到
+citen-order-service  实验室、资源、预约、超时取消、状态通知
+```
 
-- 高并发抢占安全
-- 稀缺资源不超额分配
-- 预约状态一致
-- 超时违约自动回收
-- 微服务架构下的高可用调度
-
----
+服务默认端口：Gateway `8080`、用户服务 `8081`、预约服务 `8082`、Nacos `8848`。
 
 ## 技术栈
 
-- Spring Cloud Alibaba
-  - Nacos
-  - Gateway
-  - Sentinel
-- Spring Boot
-- Redis
-- RabbitMQ
-- Redisson
-- Lua
-- MyBatis-Plus
-- MySQL
-- OpenFeign
+- Spring Boot 2.6、Spring Cloud Gateway、Nacos
+- MyBatis-Plus、MySQL
+- Redis、Lua、Redis Stream、Redisson
+- RabbitMQ TTL + DLX
 - WebSocket
 
----
+仓库中没有 Sentinel、OpenFeign、Kafka、Elasticsearch、Seata，也没有 JWT。
 
-## 核心定位
+## 预约模型
 
-该项目定位为：
+预约包含：`reservationId`、`userId`、`resourceId`、预约日期、开始时间、结束时间、确认过期时间和状态。
 
-> 校园智能问答助手（项目一）的底层资源调度中台。
-
-当上层大模型识别到用户意图，例如：
-
-- “帮我预约今晚 8 点的 GPU 节点”
-- “帮我抢一个明天下午的实训室座位”
-- “帮我确认当前预约是否已生效”
-
-系统会通过 Function Calling 将结构化资源指令下发到本中台，由本中台负责完成：
-
-- 预约资格校验
-- 资源额度抢占
-- 分布式并发控制
-- 状态落库
-- 超时违约释放
-- 后续通知与履约闭环
-
----
-
-## 当前架构
-
-项目已从单体改造为 Maven 多模块微服务架构：
+状态流转集中在 `ReservationStateTransitionService`：
 
 ```text
-citen-dp
-├─ citen-common         公共模块：实体、DTO、常量、工具类
-├─ citen-gateway        网关服务：统一入口、JWT/Token 鉴权、路由转发
-├─ citen-user-api       用户服务 API：Feign 接口定义
-├─ citen-user-service   用户与凭证服务：验证码登录、用户信息、签到
-├─ citen-order-service  资源调度服务：资源管理、预约抢占、超时释放、派发通知
-└─ src/main/resources/db
-   └─ citen_dp.sql      数据库初始化脚本
+PENDING -> CONFIRMED -> COMPLETED
+PENDING -> CANCELLED
+PENDING -> EXPIRED
 ```
 
-当前服务端口：
+所有状态更新都带旧状态条件。确认还要求 `expire_at > now`，超时要求 `expire_at <= now`，用于解决用户确认和超时消费同时发生时的竞态。
 
-- `gateway-service`：`8080`
-- `user-service`：`8081`
-- `order-service`：`8082`
-- `Nacos`：`8848`
+## 一次预约怎么走
 
----
+1. Gateway 校验 Redis Token，把用户 ID 通过请求头传给预约服务。
+2. 预约服务校验资源、日期、时间段、开放时间和容量配置。
+3. Lua 在 Redis 内原子检查同一用户重复时间段、资源每分钟占用计数和容量上限。
+4. Lua 写入占用、预约元数据和 Redis Stream，HTTP 快速返回预约 ID。
+5. Stream 消费者按资源加 Redisson 锁，在 MySQL 事务中锁资源行并再次检查时间段容量后落库。
+6. 数据库提交后发送 RabbitMQ 延迟消息，并推送 `PENDING` 状态。
+7. 用户按时确认则 `PENDING -> CONFIRMED`；到期未确认则 MQ 消费或定时恢复任务执行 `PENDING -> EXPIRED`。
+8. 取消、过期、完成会创建数据库补偿任务；事务提交后执行幂等 Lua，释放 Redis 时间段占用。
 
-## 微服务改造亮点
+## Redis Lua 边界
 
-### 1. 网关下沉与无状态化
+`seckill.lua` 只保证 Redis 内部操作的原子性：
 
-原始单体应用被拆分为：
+- 资源容量从 `resource:quota:{resourceId}` 读取。
+- 资源每分钟占用计数存入 `reservation:slots:{resourceId}:{date}`。
+- 同一用户的分钟位图存入 `reservation:user:slots:{userId}:{resourceId}:{date}`。
+- 预约元数据存入 `reservation:meta:{reservationId}`。
+- 成功后写入 `stream.reservations`。
+- 如果 `XADD` 失败，脚本在返回前撤销本次 Redis 占用。
 
-- 用户凭证服务
-- 资源调度服务
-- 网关服务
-- 公共模块
+Lua 不保证 Redis 与 MySQL 的分布式事务。MySQL 落库连续失败三次后，消费者才执行 `release-reservation.lua` 回滚本次 Redis 占用。释放脚本通过预约元数据状态保证重复执行不会重复回补。
 
-通过 **Nacos** 实现服务注册发现与动态配置，基于 **Spring Cloud Gateway** 构建统一流量入口，在网关层前置：
+## Redis Stream 处理
 
-- 会话拦截
-- Token 解析
-- 白名单放行
-- 用户身份透传
+- 服务启动时用 `XGROUP CREATE ... MKSTREAM` 创建消费组。
+- 启动后先处理当前消费者的 Pending List，再读取新消息。
+- Redisson 锁获取失败、数据库失败、ACK 失败时不提前 ACK。
+- 数据库主键 `reservationId` 使重复 Stream 消息幂等。
+- 业务落库连续失败三次后，先完成 Redis 补偿，再写 `stream.reservations.failed`，最后 ACK。
+- 畸形消息重试三次后转失败 Stream，不执行资源补偿。
 
-从而让下游调度微服务逐步走向**无状态化设计**。
+当前实现是单消费者线程，Pending 恢复只覆盖固定消费者 `c1`，不包含多实例间的消息认领。
 
-### 2. 并发防线与防雪崩机制
+## RabbitMQ 超时处理
 
-针对智算中心 / 实训室开放时段的脉冲式流量，项目在设计上引入 **Sentinel**，目标是：
+- 数据库提交后发送仅包含预约 ID 的消息。
+- 每条消息设置 TTL，过期后由 DLX 路由到超时队列。
+- Publisher Confirm 和 returned message 都通过后，才把 `timeout_message_sent` 标记为真。
+- 发送失败的 PENDING 预约由定时任务重发；已经到期的 PENDING 预约由定时任务兜底过期。
+- 消费端按预约 ID 回查数据库，只允许 `PENDING -> EXPIRED`，重复消息不会重复释放资源。
+- 监听器失败重试三次后进入消费者失败队列并记录日志。
 
-- 对核心预约 API 进行基于 QPS 的滑动窗口限流
-- 对非关键链路做熔断降级
-- 防止瞬时流量把核心调度链路击穿
-- 阻断服务级联雪崩
+## WebSocket
 
-当前仓库代码已完成 Gateway + 微服务 + Redis/Lua/RabbitMQ/Redisson 主链路改造，Sentinel 作为你简历描述中的重要可扩展能力，也非常契合面试表达。
+Gateway 路由 `/ws/**`，浏览器客户端可通过查询参数传 Token。Gateway 校验后透传用户 ID，握手阶段拒绝缺少用户 ID 的连接。Session 同时按用户和实验室保存，断开时清理。推送在数据库事务提交后异步执行，失败不回滚核心事务。
 
-### 3. 资源抢占强一致性控制
+## 运行依赖
 
-这是项目最核心的技术亮点。
+启动完整链路需要：
 
-针对高并发下“算力 / 座位超卖”的核心痛点，底层采用：
+- JDK 8 或更高版本
+- Maven
+- MySQL 8
+- Redis
+- RabbitMQ
+- Nacos
 
-- **Redis + Lua**：原子完成资格校验与额度扣减
-- **Redis Stream**：异步削峰，解耦高并发主线程
-- **Redisson 分布式锁**：在跨服务 / 异步落库阶段按用户维度串行化处理
-- **MySQL 条件更新**：做最终一致性兜底
+连接信息都可以通过 `MYSQL_*`、`REDIS_*`、`RABBITMQ_*`、`NACOS_ADDR` 环境变量覆盖。
 
-这样形成了从缓存层到持久层的多层并发防线，确保在极高并发下稀缺资源分配的**强一致性**。
+常用验证命令：
 
-### 4. 柔性事务闭环
+```bash
+mvn clean test
+mvn package -DskipTests
+```
 
-针对“预约成功后长时间未打卡签到 / 算力任务未激活”导致的资源闲置浪费，项目引入：
+## 当前测试范围
 
-- **RabbitMQ 延迟队列**
-- **死信队列**
-- **异步回补机制**
+现有单元和契约测试覆盖：
 
-形成柔性事务闭环：
+- 同一用户重复预约识别
+- 多用户竞争有限容量
+- 非重叠时间段不互相消耗容量
+- Stream 重复消息幂等
+- Redisson 锁失败不 ACK
+- 数据库连续失败后的 Redis 补偿、失败 Stream 和 ACK 顺序
+- 数据库成功后的 Redis/ACK 异常不会错误补偿
+- 畸形 Stream 消息退出 Pending List
+- 重复 Redis 补偿
+- 重复 MQ 超时和确认/超时状态竞态
+- 非法状态转换
 
-1. 预约成功
-2. 发送延迟消息
-3. 规定时间内未确认
-4. 进入死信队列
-5. 标记预约为超时违约
-6. 恢复 `ResourceQuota` 可用额度
+这些测试没有启动真实 Redis、RabbitMQ 或 Nacos，因此不能替代中间件集成测试和压测。
 
-相比定时任务轮询扫表，这种方式显著降低了数据库 I/O 损耗，也更适合在简历里体现“事件驱动 + 高并发架构设计能力”。
+## 简历边界
 
-### 5. 深分页优化
+可以描述：Redis Lua 原子预约校验、按分钟容量控制、Redis Stream 异步落库与失败补偿、RabbitMQ TTL + DLX 超时取消、数据库 CAS 状态流转、WebSocket 状态通知。
 
-针对压测产生的百万级历史调度日志，项目在管理端查询中采用：
-
-- `EXPLAIN` 执行计划分析
-- 覆盖索引
-- 深分页延迟关联
-
-将深分页慢查询耗时从 **3.2s 优化到 150ms 以内**。
-
-这部分非常适合在面试里展开，能够体现：
-
-- SQL 调优能力
-- 索引理解
-- 大数据量后台查询优化经验
-
----
-
-## 当前对外核心接口
-
-### 网关路由
-
-- `/user/** -> user-service`
-- `/reservation/** -> order-service`
-
-### 资源调度服务
-
-- `POST /reservation/reserve/{id}`：高并发抢占资源额度
-- `GET /reservation/admin/page`：分页查询预约记录
-- `GET /lab/{id}`：查询实训室 / 算力中心详情
-- `GET /lab/of/type`：按资源类型查询可用中心
-- `GET /resource/list/{labId}`：查询某中心下的资源列表
-- `POST /resource`：新增资源
-- `POST /resource/quota`：新增资源额度
-
----
-
-## 项目中间件职责划分
-
-### Redis
-
-- 登录态缓存
-- 验证码缓存
-- 资源额度缓存
-- 预约资格集合
-- Redis Stream 异步消息流
-- GEO 派发坐标
-
-### Lua
-
-在资源抢占接口中原子完成：
-
-- 判断额度是否充足
-- 判断用户是否重复预约
-- 扣减额度
-- 记录抢占资格
-- 写入异步消息流
-
-### Redisson
-
-- 按用户维度加分布式锁
-- 避免异步消费阶段重复预约落库
-
-### RabbitMQ
-
-- 延迟消息
-- 死信转发
-- 超时违约监听
-- 额度自动回补
-
----
-
-## 简历可直接使用的话术
-
-### 项目名称
-
-校园智算中心预约与资源调度系统
-
-### 技术栈
-
-Spring Cloud Alibaba（Nacos / Gateway / Sentinel）、Spring Boot、Redis、RabbitMQ、Redisson、Lua、MyBatis-Plus、MySQL
-
-### 项目描述
-
-作为校园智能问答助手的底层资源调度执行引擎，负责承接大模型 Function Calling 下发的资源预约指令，围绕智算中心 GPU 节点、实训室工位等稀缺资源，解决高并发抢占下的额度控制、状态一致性、超时释放与柔性事务闭环问题。
-
-### 个人职责示例
-
-- 负责将单体系统重构为 Spring Cloud Alibaba 微服务架构，拆分网关、用户凭证、资源调度等独立服务
-- 负责基于 Gateway 构建统一流量入口，前置 Token/JWT 解析与会话拦截，实现下游服务无状态化
-- 负责设计 Redis + Lua + Redisson 的高并发抢占链路，解决稀缺资源超额分配问题
-- 负责基于 RabbitMQ 死信队列实现预约超时违约自动回收与额度恢复
-- 负责针对百万级历史调度日志进行深分页优化，结合覆盖索引与执行计划分析显著降低查询耗时
-
----
-
-## 仓库当前状态说明
-
-当前仓库已经完成“简历展示导向”的收口：
-
-- 保留了用户服务、网关服务、资源调度服务三条主链路
-- 删除了博客 / 关注 / 点评等与简历主线无关的社交展示代码
-- 资源、额度、预约、实训室等核心领域词已替换为校园调度语义
-
-如果继续完善，可以进一步补充：
-
-- Sentinel 实际规则配置与示例
-- Docker / Docker Compose 部署脚本
-- OpenAPI / Swagger 文档
-- 架构图图片版
-- 压测报告与 SQL 调优截图
+不能描述：生产级分布式事务、强一致性、已验证的高可用、百万数据 SQL 优化、具体 QPS/冲突率/性能提升、日均业务量、轮询下降比例。除非以后补充真实测试和证据。
