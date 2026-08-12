@@ -67,12 +67,15 @@ Lua 不保证 Redis 与 MySQL 的分布式事务。MySQL 落库连续失败三�
 
 - 服务启动时用 `XGROUP CREATE ... MKSTREAM` 创建消费组。
 - 启动后先处理当前消费者的 Pending List，再读取新消息。
+- 每个服务实例使用随机 Consumer Name；恢复任务使用同一实例派生出的独立 Consumer Name，通过 `XAUTOCLAIM` 接管其他宕机消费者遗留的 stale Pending，避免与正常消费线程并行处理同一条消息。
+- 默认只接管 idle 超过 60 秒的消息，每 20 秒最多认领 10 条，三项参数都可通过 `reservation.stream.*` 配置。
+- 认领后的消息继续进入原有统一处理方法，不改变成功 ACK、失败重试和最终补偿规则。
 - Redisson 锁获取失败、数据库失败、ACK 失败时不提前 ACK。
 - 数据库主键 `reservationId` 使重复 Stream 消息幂等。
 - 业务落库连续失败三次后，先完成 Redis 补偿，再写 `stream.reservations.failed`，最后 ACK。
 - 畸形消息重试三次后转失败 Stream，不执行资源补偿。
 
-当前实现是单消费者线程，Pending 恢复只覆盖固定消费者 `c1`，不包含多实例间的消息认领。
+跨消费者 Pending 恢复依赖 Redis 6.2 引入的 `XAUTOCLAIM`，因此预约服务要求 Redis >= 6.2。
 
 ## RabbitMQ 超时处理
 
@@ -94,7 +97,7 @@ Gateway 路由 `/ws/**`，浏览器客户端可通过查询参数传 Token。Gat
 - JDK 8 或更高版本
 - Maven
 - MySQL 8
-- Redis
+- Redis >= 6.2
 - RabbitMQ
 - Nacos
 
@@ -115,6 +118,7 @@ mvn package -DskipTests
 - 多用户竞争有限容量
 - 非重叠时间段不互相消耗容量
 - Stream 重复消息幂等
+- stale Pending 的 idle 阈值、跨消费者认领和统一处理流程
 - Redisson 锁失败不 ACK
 - 数据库连续失败后的 Redis 补偿、失败 Stream 和 ACK 顺序
 - 数据库成功后的 Redis/ACK 异常不会错误补偿

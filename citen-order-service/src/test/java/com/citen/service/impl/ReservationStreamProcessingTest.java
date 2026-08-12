@@ -2,22 +2,33 @@ package com.citen.service.impl;
 
 import com.citen.service.IReservationService;
 import com.citen.utils.RedisConstants;
+import io.lettuce.core.RedisFuture;
+import io.lettuce.core.StreamMessage;
+import io.lettuce.core.XAutoClaimArgs;
+import io.lettuce.core.api.async.RedisStreamAsyncCommands;
+import io.lettuce.core.models.stream.ClaimedMessages;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.connection.stream.StreamRecords;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StreamOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,14 +37,142 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
 class ReservationStreamProcessingTest {
+
+    @Test
+    void normalSuccessfulMessageIsAckedAndNotRecoveredAgain() {
+        ReservationServiceImpl service = spy(newService());
+        mockLock(getRedisson(service));
+        doReturn(ReservationServiceImpl.AutoClaimResult.empty())
+                .when(service).claimStalePendingMessages();
+
+        service.processReservationRecord(record(10L));
+        service.recoverStalePendingMessages();
+
+        verify(getProxy(service), times(1)).createReservation(any());
+        verify(getStream(service), times(1))
+                .acknowledge(anyString(), anyString(), any(RecordId.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void freshPendingMessageIsNotClaimedBeforeIdleTimeout() throws Exception {
+        ReservationServiceImpl service = newService();
+        StringRedisTemplate template = getTemplate(service);
+        RedisConnection connection = mock(RedisConnection.class);
+        RedisStreamAsyncCommands<byte[], byte[]> commands = mock(RedisStreamAsyncCommands.class);
+        RedisFuture<ClaimedMessages<byte[], byte[]>> future = mock(RedisFuture.class);
+        ReflectionTestUtils.setField(service, "pendingIdleTimeout", Duration.ofSeconds(60));
+        ReflectionTestUtils.setField(service, "pendingRecoveryBatchSize", 10);
+        when(connection.getNativeConnection()).thenReturn(commands);
+        when(commands.xautoclaim(any(byte[].class), any(XAutoClaimArgs.class))).thenReturn(future);
+        when(future.get(anyLong(), eq(TimeUnit.SECONDS)))
+                .thenReturn(new ClaimedMessages<>("0-0", Collections.emptyList()));
+        when(template.execute(any(RedisCallback.class))).thenAnswer(invocation ->
+                ((RedisCallback<?>) invocation.getArgument(0)).doInRedis(connection));
+
+        service.recoverStalePendingMessages();
+
+        org.mockito.ArgumentCaptor<XAutoClaimArgs<byte[]>> arguments =
+                org.mockito.ArgumentCaptor.forClass(XAutoClaimArgs.class);
+        verify(commands).xautoclaim(any(byte[].class), arguments.capture());
+        assertEquals(60000L, ReflectionTestUtils.getField(arguments.getValue(), "minIdleTime"));
+        assertEquals(10L, ReflectionTestUtils.getField(arguments.getValue(), "count"));
+        assertEquals("0-0", ReflectionTestUtils.getField(arguments.getValue(), "startId"));
+        verify(getProxy(service), never()).createReservation(any());
+        verify(getStream(service), never())
+                .acknowledge(anyString(), anyString(), any(RecordId.class));
+    }
+
+    @Test
+    void stalePendingFromCrashedConsumerIsClaimedProcessedAndAcked() {
+        ReservationServiceImpl service = spy(newService());
+        mockLock(getRedisson(service));
+        doReturn(claimed(record(11L))).when(service).claimStalePendingMessages();
+
+        service.recoverStalePendingMessages();
+
+        verify(getProxy(service)).createReservation(any());
+        verify(getStream(service)).acknowledge(
+                eq(RedisConstants.RESERVATION_STREAM_KEY), eq("g1"), any(RecordId.class));
+    }
+
+    @Test
+    void staleClaimAfterDatabaseCommitIsIdempotentlyAckedWithoutCompensation() {
+        ReservationServiceImpl service = spy(newService());
+        mockLock(getRedisson(service));
+        MapRecord<String, Object, Object> record = record(12L);
+        com.citen.entity.Reservation existing = reservation(12L);
+        doReturn(existing).when(service).getById(12L);
+        IReservationService proxy = getProxy(service);
+        doAnswer(invocation -> {
+            service.createReservation(invocation.getArgument(0));
+            return null;
+        }).when(proxy).createReservation(any());
+        doReturn(claimed(record)).when(service).claimStalePendingMessages();
+
+        service.recoverStalePendingMessages();
+
+        verify(getTemplate(service), never())
+                .execute(any(DefaultRedisScript.class), anyList(), anyString());
+        verify(getStream(service)).acknowledge(
+                eq(RedisConstants.RESERVATION_STREAM_KEY), eq("g1"), eq(record.getId()));
+    }
+
+    @Test
+    void finalDatabaseFailureAfterClaimUsesExistingCompensationFailedStreamAndAckFlow() {
+        ReservationServiceImpl service = spy(newService());
+        mockLock(getRedisson(service));
+        IReservationService proxy = getProxy(service);
+        doThrow(new IllegalStateException("db down"))
+                .when(proxy).createReservation(any());
+        when(getHash(service).increment(anyString(), anyString(), anyLong())).thenReturn(3L);
+        when(getTemplate(service).execute(
+                any(DefaultRedisScript.class), anyList(), anyString())).thenReturn(1L);
+        doReturn(claimed(record(13L))).when(service).claimStalePendingMessages();
+
+        service.recoverStalePendingMessages();
+
+        verify(getTemplate(service)).execute(
+                any(DefaultRedisScript.class), anyList(), anyString());
+        verify(getStream(service)).add(
+                eq(RedisConstants.RESERVATION_FAILED_STREAM_KEY), anyMap());
+        verify(getStream(service)).acknowledge(
+                eq(RedisConstants.RESERVATION_STREAM_KEY), eq("g1"), any(RecordId.class));
+    }
+
+    @Test
+    void lettuceAutoClaimResponseIsConvertedToExistingMapRecordFormat() {
+        Map<byte[], byte[]> fields = new HashMap<>();
+        fields.put(bytes("id"), bytes("14"));
+        fields.put(bytes("userId"), bytes("10"));
+        fields.put(bytes("resourceId"), bytes("1"));
+        fields.put(bytes("reservationDate"), bytes("2026-08-20"));
+        fields.put(bytes("startTime"), bytes("09:00"));
+        fields.put(bytes("endTime"), bytes("10:00"));
+        StreamMessage<byte[], byte[]> message = new StreamMessage<>(
+                bytes(RedisConstants.RESERVATION_STREAM_KEY), "9-14", fields);
+        ClaimedMessages<byte[], byte[]> claimed = new ClaimedMessages<>(
+                "9-15", Collections.singletonList(message));
+
+        ReservationServiceImpl.AutoClaimResult result =
+                ReservationServiceImpl.toAutoClaimResult(claimed);
+
+        assertEquals("9-15", result.nextCursor);
+        assertEquals(1, result.records.size());
+        assertEquals("9-14", result.records.get(0).getId().getValue());
+        assertEquals("14", result.records.get(0).getValue().get("id"));
+    }
 
     @Test
     void lockFailureKeepsStreamRecordPending() {
@@ -156,6 +295,16 @@ class ReservationStreamProcessingTest {
         reservation.setStartTime(java.time.LocalTime.parse("09:00"));
         reservation.setEndTime(java.time.LocalTime.parse("10:00"));
         return reservation;
+    }
+
+    private ReservationServiceImpl.AutoClaimResult claimed(
+            MapRecord<String, Object, Object> record) {
+        return new ReservationServiceImpl.AutoClaimResult(
+                "0-0", Collections.singletonList(record));
+    }
+
+    private static byte[] bytes(String value) {
+        return value.getBytes(StandardCharsets.UTF_8);
     }
 
     @SuppressWarnings("unchecked")

@@ -22,6 +22,11 @@ import com.citen.utils.RedisConstants;
 import com.citen.utils.RedisIdWorker;
 import com.citen.utils.UserHolder;
 import com.citen.websocket.WebSocketServer;
+import io.lettuce.core.RedisFuture;
+import io.lettuce.core.StreamMessage;
+import io.lettuce.core.XAutoClaimArgs;
+import io.lettuce.core.api.async.RedisStreamAsyncCommands;
+import io.lettuce.core.models.stream.ClaimedMessages;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -55,13 +60,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.UUID;
 
 @Service
@@ -70,8 +78,10 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
     private static final Logger LOG = LoggerFactory.getLogger(ReservationServiceImpl.class);
     private static final String STREAM_CONSUMER_GROUP = "g1";
     private static final String STREAM_CONSUMER_NAME = "c-" + UUID.randomUUID();
+    private static final String STREAM_RECOVERY_CONSUMER_NAME = STREAM_CONSUMER_NAME + "-recovery";
     private static final long PENDING_LIST_RETRY_DELAY_MILLIS = 500L;
     private static final int PENDING_LIST_MAX_RETRY_COUNT = 3;
+    private static final long AUTO_CLAIM_COMMAND_TIMEOUT_SECONDS = 5L;
     private static final String REDIS_RELEASE_COMPENSATION = "REDIS_SLOT_RELEASE";
 
     private static final DefaultRedisScript<Long> RESERVATION_SCRIPT;
@@ -112,6 +122,14 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
 
     @Value("${reservation.confirm-timeout-seconds:900}")
     private long confirmTimeoutSeconds;
+
+    @Value("${reservation.stream.pending-idle-timeout:60s}")
+    private Duration pendingIdleTimeout = Duration.ofSeconds(60);
+
+    @Value("${reservation.stream.recovery-batch-size:10}")
+    private int pendingRecoveryBatchSize = 10;
+
+    private volatile String pendingRecoveryCursor = "0-0";
 
     @Autowired
     @Lazy
@@ -266,6 +284,107 @@ public class ReservationServiceImpl extends ServiceImpl<ReservationMapper, Reser
         acknowledgeRecord(record);
         stringRedisTemplate.opsForHash().delete(
                 RedisConstants.RESERVATION_RETRY_KEY, record.getId().getValue());
+    }
+
+    /** Spring Data Redis 2.6 has no XAUTOCLAIM API, so use its Lettuce connection. */
+    @Scheduled(fixedDelayString = "${reservation.stream.recovery-interval-ms:20000}")
+    public void recoverStalePendingMessages() {
+        AutoClaimResult claim;
+        try {
+            claim = claimStalePendingMessages();
+        } catch (RuntimeException e) {
+            LOG.warn("stale reservation pending recovery failed", e);
+            return;
+        }
+        if (claim == null || claim.records.isEmpty()) {
+            return;
+        }
+        for (MapRecord<String, Object, Object> record : claim.records) {
+            try {
+                processReservationRecord(record);
+            } catch (RuntimeException e) {
+                // Keeping the record pending is intentional. The existing retry
+                // and compensation rules decide when it can be ACKed.
+                LOG.warn("claimed reservation pending message remains unacked, recordId={}",
+                        record.getId().getValue(), e);
+            }
+        }
+    }
+
+    AutoClaimResult claimStalePendingMessages() {
+        final long idleMillis = Math.max(1L, pendingIdleTimeout.toMillis());
+        final int batchSize = Math.max(1, Math.min(pendingRecoveryBatchSize, 20));
+        final String startId = pendingRecoveryCursor == null ? "0-0" : pendingRecoveryCursor;
+        AutoClaimResult claim = stringRedisTemplate.execute((RedisCallback<AutoClaimResult>) connection ->
+                executeAutoClaim(connection.getNativeConnection(), idleMillis, batchSize, startId));
+        if (claim != null && claim.nextCursor != null && !claim.nextCursor.isEmpty()) {
+            pendingRecoveryCursor = claim.nextCursor;
+        }
+        return claim == null ? AutoClaimResult.empty() : claim;
+    }
+
+    @SuppressWarnings("unchecked")
+    private AutoClaimResult executeAutoClaim(Object nativeConnection, long idleMillis,
+                                             int batchSize, String startId) {
+        if (!(nativeConnection instanceof RedisStreamAsyncCommands)) {
+            throw new IllegalStateException("XAUTOCLAIM requires a Lettuce Redis connection");
+        }
+        RedisStreamAsyncCommands<byte[], byte[]> commands =
+                (RedisStreamAsyncCommands<byte[], byte[]>) nativeConnection;
+        XAutoClaimArgs<byte[]> arguments = XAutoClaimArgs.Builder.xautoclaim(
+                        io.lettuce.core.Consumer.from(
+                                STREAM_CONSUMER_GROUP.getBytes(StandardCharsets.UTF_8),
+                                STREAM_RECOVERY_CONSUMER_NAME.getBytes(StandardCharsets.UTF_8)),
+                        idleMillis,
+                        startId)
+                .count(batchSize);
+        RedisFuture<ClaimedMessages<byte[], byte[]>> future = commands.xautoclaim(
+                streamQueueName.getBytes(StandardCharsets.UTF_8), arguments);
+        try {
+            return toAutoClaimResult(future.get(AUTO_CLAIM_COMMAND_TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("XAUTOCLAIM was interrupted", e);
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            throw new IllegalStateException("XAUTOCLAIM timed out", e);
+        } catch (ExecutionException e) {
+            throw new IllegalStateException("XAUTOCLAIM failed", e.getCause());
+        }
+    }
+
+    static AutoClaimResult toAutoClaimResult(ClaimedMessages<byte[], byte[]> claimed) {
+        if (claimed == null) {
+            return AutoClaimResult.empty();
+        }
+        List<MapRecord<String, Object, Object>> records = new ArrayList<>();
+        for (StreamMessage<byte[], byte[]> message : claimed.getMessages()) {
+            Map<Object, Object> values = new HashMap<>();
+            for (Map.Entry<byte[], byte[]> field : message.getBody().entrySet()) {
+                values.put(new String(field.getKey(), StandardCharsets.UTF_8),
+                        new String(field.getValue(), StandardCharsets.UTF_8));
+            }
+            records.add(org.springframework.data.redis.connection.stream.StreamRecords
+                    .mapBacked(values)
+                    .withStreamKey(RedisConstants.RESERVATION_STREAM_KEY)
+                    .withId(org.springframework.data.redis.connection.stream.RecordId.of(message.getId())));
+        }
+        String nextCursor = claimed.getId();
+        return new AutoClaimResult(nextCursor == null ? "0-0" : nextCursor, records);
+    }
+
+    static final class AutoClaimResult {
+        final String nextCursor;
+        final List<MapRecord<String, Object, Object>> records;
+
+        AutoClaimResult(String nextCursor, List<MapRecord<String, Object, Object>> records) {
+            this.nextCursor = nextCursor;
+            this.records = records == null ? Collections.emptyList() : records;
+        }
+
+        static AutoClaimResult empty() {
+            return new AutoClaimResult("0-0", Collections.emptyList());
+        }
     }
 
     void handleReservation(Reservation reservation) {

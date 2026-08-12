@@ -61,3 +61,7 @@ reservation:
   confirm-timeout-seconds: ${RESERVATION_CONFIRM_TIMEOUT_SECONDS:900}
   recovery-interval-ms: ${RESERVATION_RECOVERY_INTERVAL_MS:60000}
   compensation-interval-ms: ${RESERVATION_COMPENSATION_INTERVAL_MS:30000}
+  stream:
+    pending-idle-timeout: ${RESERVATION_STREAM_PENDING_IDLE_TIMEOUT:60s}
+    recovery-interval-ms: ${RESERVATION_STREAM_RECOVERY_INTERVAL_MS:20000}
+    recovery-batch-size: ${RESERVATION_STREAM_RECOVERY_BATCH_SIZE:10}
