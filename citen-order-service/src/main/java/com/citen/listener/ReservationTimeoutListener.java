@@ -25,6 +25,6 @@ public class ReservationTimeoutListener {
             return;
         }
 
-        reservationService.markTimeoutBreach(reservation.getId());
+        reservationService.expireReservation(reservation.getId());
     }
 }

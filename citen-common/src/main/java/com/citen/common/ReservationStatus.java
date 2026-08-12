@@ -1,11 +1,11 @@
 package com.citen.common;
 
 public enum ReservationStatus {
-    PENDING_CONFIRM(1, "待确认"),
+    PENDING(1, "待确认"),
     CONFIRMED(2, "已确认"),
     COMPLETED(3, "已完成"),
-    CANCELED(4, "已取消"),
-    TIMEOUT_BREACH(5, "超时违约");
+    CANCELLED(4, "已取消"),
+    EXPIRED(5, "已过期");
 
     private final int code;
     private final String desc;

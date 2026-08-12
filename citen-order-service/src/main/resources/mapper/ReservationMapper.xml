@@ -7,6 +7,11 @@
             r.id,
             r.user_id,
             r.resource_id,
+            r.reservation_date,
+            r.start_time,
+            r.end_time,
+            r.expire_at,
+            r.timeout_message_sent,
             r.reserve_type,
             r.status,
             r.create_time,
@@ -23,5 +28,23 @@
             LIMIT #{offset}, #{pageSize}
         ) page_ids ON r.id = page_ids.id
         ORDER BY page_ids.id DESC
+    </select>
+
+    <select id="lockResourceForReservation" resultType="java.lang.Long">
+        SELECT id
+        FROM tb_resource
+        WHERE id = #{resourceId}
+          AND status = 1
+        FOR UPDATE
+    </select>
+
+    <select id="selectActiveOverlappingReservations" resultType="com.citen.entity.Reservation">
+        SELECT id, user_id, start_time, end_time
+        FROM tb_reservation
+        WHERE resource_id = #{resourceId}
+          AND reservation_date = #{reservationDate}
+          AND status IN (1, 2)
+          AND start_time &lt; #{endTime}
+          AND end_time &gt; #{startTime}
     </select>
 </mapper>

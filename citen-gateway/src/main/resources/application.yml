@@ -6,9 +6,9 @@ spring:
     name: gateway-service
   cloud:
     nacos:
-      server-addr: 127.0.0.1:8848
+      server-addr: ${NACOS_ADDR:127.0.0.1:8848}
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
     gateway:
       routes:
         - id: user-service-route
@@ -19,10 +19,18 @@ spring:
           uri: lb://order-service
           predicates:
             - Path=/reservation/**
+        - id: order-resource-route
+          uri: lb://order-service
+          predicates:
+            - Path=/resource/**,/lab/**,/lab-type/**
+        - id: order-websocket-route
+          uri: lb:ws://order-service
+          predicates:
+            - Path=/ws/**
   redis:
-    host: 192.168.88.139
-    port: 6379
-    password: 123456
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
     lettuce:
       pool:
         max-active: 10

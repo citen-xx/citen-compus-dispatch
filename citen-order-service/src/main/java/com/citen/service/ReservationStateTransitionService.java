@@ -19,9 +19,9 @@ public class ReservationStateTransitionService {
     private static final Map<Integer, EnumMap<ReservationStatusEvent, ReservationStatus>> TRANSITION_RULES = new HashMap<>();
 
     static {
-        addRule(ReservationStatus.PENDING_CONFIRM, ReservationStatusEvent.CONFIRM, ReservationStatus.CONFIRMED);
-        addRule(ReservationStatus.PENDING_CONFIRM, ReservationStatusEvent.CANCEL, ReservationStatus.CANCELED);
-        addRule(ReservationStatus.PENDING_CONFIRM, ReservationStatusEvent.TIMEOUT, ReservationStatus.TIMEOUT_BREACH);
+        addRule(ReservationStatus.PENDING, ReservationStatusEvent.CONFIRM, ReservationStatus.CONFIRMED);
+        addRule(ReservationStatus.PENDING, ReservationStatusEvent.CANCEL, ReservationStatus.CANCELLED);
+        addRule(ReservationStatus.PENDING, ReservationStatusEvent.EXPIRE, ReservationStatus.EXPIRED);
         addRule(ReservationStatus.CONFIRMED, ReservationStatusEvent.COMPLETE, ReservationStatus.COMPLETED);
     }
 
@@ -80,6 +80,11 @@ public class ReservationStateTransitionService {
         LambdaUpdateWrapper<Reservation> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Reservation::getId, reservationId)
                 .eq(Reservation::getStatus, currentStatus);
+        if (event == ReservationStatusEvent.CONFIRM) {
+            updateWrapper.gt(Reservation::getExpireAt, now);
+        } else if (event == ReservationStatusEvent.EXPIRE) {
+            updateWrapper.le(Reservation::getExpireAt, now);
+        }
         if (userId != null) {
             updateWrapper.eq(Reservation::getUserId, userId);
         }

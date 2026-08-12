@@ -39,6 +39,9 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
         }
 
         String token = exchange.getRequest().getHeaders().getFirst("authorization");
+        if (!StringUtils.hasText(token) && path.startsWith("/ws/")) {
+            token = exchange.getRequest().getQueryParams().getFirst("token");
+        }
         if (!StringUtils.hasText(token)) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();

@@ -1,15 +1,18 @@
 package com.citen.controller;
 
 import com.citen.dto.Result;
+import com.citen.dto.ReservationRequest;
 import com.citen.service.IReservationService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/reservation")
@@ -19,8 +22,9 @@ public class ReservationController {
     private IReservationService reservationService;
 
     @PostMapping("/reserve/{id}")
-    public Result reserveResource(@PathVariable("id") Long resourceId) {
-        return reservationService.reserveResource(resourceId);
+    public Result reserveResource(@PathVariable("id") Long resourceId,
+                                  @Valid @RequestBody ReservationRequest request) {
+        return reservationService.reserveResource(resourceId, request);
     }
 
     @PostMapping("/confirm/{id}")
@@ -31,6 +35,11 @@ public class ReservationController {
     @PostMapping("/cancel/{id}")
     public Result cancelReservation(@PathVariable("id") Long reservationId) {
         return reservationService.cancelReservation(reservationId);
+    }
+
+    @PostMapping("/complete/{id}")
+    public Result completeReservation(@PathVariable("id") Long reservationId) {
+        return reservationService.completeReservation(reservationId);
     }
 
     @GetMapping("/admin/page")

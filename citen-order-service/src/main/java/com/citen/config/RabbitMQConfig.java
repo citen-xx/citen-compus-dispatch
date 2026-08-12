@@ -18,8 +18,9 @@ public class RabbitMQConfig {
     public static final String RESERVATION_DLX_EXCHANGE = "reservation.dlx.exchange";
     public static final String RESERVATION_TIMEOUT_QUEUE = "reservation.timeout.queue";
     public static final String RESERVATION_TIMEOUT_ROUTING_KEY = "reservation.timeout";
-
-    public static final int RESERVATION_CANCEL_TTL = 10 * 1000;
+    public static final String CONSUMER_DLX_EXCHANGE = "consumer.dlx.exchange";
+    public static final String CONSUMER_DLX_ROUTING_KEY = "consumer.dlx.routing.key";
+    public static final String CONSUMER_DLX_QUEUE_NAME = "consumer.dlx.queue";
 
     @Bean
     public DirectExchange reservationEventExchange() {
@@ -34,7 +35,6 @@ public class RabbitMQConfig {
     @Bean
     public Queue reservationDelayQueue() {
         return QueueBuilder.durable(RESERVATION_DELAY_QUEUE)
-                .ttl(RESERVATION_CANCEL_TTL)
                 .deadLetterExchange(RESERVATION_DLX_EXCHANGE)
                 .deadLetterRoutingKey(RESERVATION_TIMEOUT_ROUTING_KEY)
                 .build();
@@ -42,7 +42,20 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue reservationTimeoutQueue() {
-        return QueueBuilder.durable(RESERVATION_TIMEOUT_QUEUE).build();
+        return QueueBuilder.durable(RESERVATION_TIMEOUT_QUEUE)
+                .deadLetterExchange(CONSUMER_DLX_EXCHANGE)
+                .deadLetterRoutingKey(CONSUMER_DLX_ROUTING_KEY)
+                .build();
+    }
+
+    @Bean
+    public DirectExchange consumerDlxExchange() {
+        return new DirectExchange(CONSUMER_DLX_EXCHANGE, true, false);
+    }
+
+    @Bean
+    public Queue consumerDlxQueue() {
+        return QueueBuilder.durable(CONSUMER_DLX_QUEUE_NAME).build();
     }
 
     @Bean
@@ -57,5 +70,12 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(reservationTimeoutQueue())
                 .to(reservationDlxExchange())
                 .with(RESERVATION_TIMEOUT_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding consumerDlxBinding() {
+        return BindingBuilder.bind(consumerDlxQueue())
+                .to(consumerDlxExchange())
+                .with(CONSUMER_DLX_ROUTING_KEY);
     }
 }

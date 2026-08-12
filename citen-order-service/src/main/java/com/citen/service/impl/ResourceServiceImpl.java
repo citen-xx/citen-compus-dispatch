@@ -9,8 +9,12 @@ import com.citen.service.IResourceQuotaService;
 import com.citen.service.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 
@@ -18,6 +22,8 @@ import static com.citen.utils.RedisConstants.RESOURCE_QUOTA_KEY;
 
 @Service
 public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> implements IResourceService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ResourceServiceImpl.class);
 
     @javax.annotation.Resource
     private IResourceQuotaService resourceQuotaService;
@@ -43,9 +49,19 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
         resourceQuota.setEndTime(resource.getEndTime());
         resourceQuotaService.save(resourceQuota);
 
-        stringRedisTemplate.opsForValue().set(
-                RESOURCE_QUOTA_KEY + resource.getId(),
-                resource.getQuota().toString()
-        );
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCommit() {
+                try {
+                    stringRedisTemplate.opsForValue().set(
+                            RESOURCE_QUOTA_KEY + resource.getId(),
+                            resource.getQuota().toString()
+                    );
+                } catch (RuntimeException e) {
+                    LOG.error("resource saved but redis quota initialization failed, resourceId={}",
+                            resource.getId(), e);
+                }
+            }
+        });
     }
 }

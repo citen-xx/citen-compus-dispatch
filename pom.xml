@@ -21,7 +21,6 @@
     <modules>
         <module>citen-common</module>
         <module>citen-gateway</module>
-        <module>citen-user-api</module>
         <module>citen-user-service</module>
         <module>citen-order-service</module>
     </modules>

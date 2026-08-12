@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 稀缺资源预约额度
+ * 资源在同一时间段允许的最大并发预约数
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -28,7 +28,7 @@ public class ResourceQuota implements Serializable {
     private Long resourceId;
 
     /**
-     * 可预约额度
+     * 同一时间段的容量上限，不是会被永久扣减的全局库存
      */
     private Integer quota;
 
